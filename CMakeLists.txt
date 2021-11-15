@@ -23,6 +23,6 @@ configure_file(
 
 add_library(mpio INTERFACE)
 
-target_include_directories(mpio PUBLIC
+target_include_directories(mpio INTERFACE
 	${PROJECT_BINARY_DIR}
 	${PROJECT_SOURCE_DIR}/include)
