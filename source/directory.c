@@ -35,7 +35,7 @@ bool isDirectoryExists(const char* path)
 bool createDirectory(const char* path)
 {
 	assert(path);
-	return CreateDirectoryA(path, NULL) == TRUE
+	return CreateDirectoryA(path, NULL) == TRUE;
 }
 bool isDirectoryExists(const char* path)
 {
