@@ -15,11 +15,29 @@
 #pragma once
 
 #if __linux__ || __APPLE__
+#include <stdbool.h>
 #include <sys/stat.h>
+
 #define createDirectory(x) mkdir(x, 0777) == 0
+
+inline static bool isDirectoryExists(const char* path)
+{
+	struct stat sb;
+	return stat(path, &sb) == 0 && S_ISDIR(sb.st_mode);
+}
 #elif _WIN32
+#include <stdbool.h>
 #include <windows.h>
+
 #define createDirectory(x) CreateDirectoryA(x, NULL) == TRUE
+
+inline static bool isDirectoryExists(const char* path)
+{
+	DWORD attribs = GetFileAttributes(path);
+
+	return (attribs != INVALID_FILE_ATTRIBUTES &&
+		(attribs & FILE_ATTRIBUTE_DIRECTORY));
+}
 #else
 #error Unknown operating system
 #endif
