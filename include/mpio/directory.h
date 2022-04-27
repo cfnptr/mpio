@@ -13,31 +13,46 @@
 // limitations under the License.
 
 #pragma once
+#include <stdbool.h>
 
 #if __linux__ || __APPLE__
-#include <stdbool.h>
-#include <sys/stat.h>
-
-#define createDirectory(x) mkdir(x, 0777) == 0
-
-inline static bool isDirectoryExists(const char* path)
-{
-	struct stat sb;
-	return stat(path, &sb) == 0 && S_ISDIR(sb.st_mode);
-}
+/*
+ * Create a new directory.
+ * Returns true on success.
+ *
+ * path - directory path string.
+ */
+bool createDirectory(const char* path);
+/*
+ * Returns true if directory exists.
+ * path - directory path string.
+ */
+bool isDirectoryExists(const char* path);
 #elif _WIN32
-#include <stdbool.h>
-#include <windows.h>
-
-#define createDirectory(x) CreateDirectoryA(x, NULL) == TRUE
-
-inline static bool isDirectoryExists(const char* path)
-{
-	DWORD attribs = GetFileAttributes(path);
-
-	return (attribs != INVALID_FILE_ATTRIBUTES &&
-		(attribs & FILE_ATTRIBUTE_DIRECTORY));
-}
+/*
+ * Create a new directory.
+ * Returns true on success.
+ *
+ * path - directory path string.
+ */
+bool createDirectory(path);
+/*
+ * Returns true if directory exists.
+ * path - directory path string.
+ */
+bool isDirectoryExists(const char* path);
 #else
 #error Unknown operating system
+#endif
+
+#if __APPLE__
+/*
+ * Returns macOS program data directory, or NULL on failure.
+ * isShared - is directory shared between users.
+ */
+const char* getDataDirectory(bool isShared);
+/*
+ * Returns macOS bundle resources directory, or NULL on failure.
+ */
+const char* getResourcesDirectory();
 #endif
