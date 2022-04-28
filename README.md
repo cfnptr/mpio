@@ -15,12 +15,6 @@ A library providing generic interface for file system **input / output** operati
 * [Git 2.30+](https://git-scm.com/)
 * [CMake 3.16+](https://cmake.org/)
 
-### CMake options
-
-| Name              | Description               | Default value |
-|-------------------|---------------------------|---------------|
-| MPIO_BUILD_SHARED | Build MPIO shared library | `ON`          |
-
 ## Cloning
 
 ```
