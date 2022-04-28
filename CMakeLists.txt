@@ -29,7 +29,7 @@ if (CMAKE_SYSTEM_NAME MATCHES "Darwin")
 endif ()
 
 project(mpio
-	VERSION 1.0.0
+	VERSION 1.0.1
 	DESCRIPTION "Multi-platform IO library"
 	HOMEPAGE_URL "https://github.com/cfnptr/mpio"
 	LANGUAGES ${MPIO_LANGUAGES})
