@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.16)
 
 if (${CMAKE_SOURCE_DIR} MATCHES ${CMAKE_BINARY_DIR})
 	message(FATAL_ERROR "Prevented in-tree build")
@@ -29,7 +29,7 @@ if (CMAKE_SYSTEM_NAME MATCHES "Darwin")
 endif ()
 
 project(mpio
-	VERSION 0.0.1
+	VERSION 1.0.0
 	DESCRIPTION "Multi-platform IO library"
 	HOMEPAGE_URL "https://github.com/cfnptr/mpio"
 	LANGUAGES ${MPIO_LANGUAGES})
