@@ -22,26 +22,24 @@ if (TARGET mpio-static)
 	return()
 endif ()
 
-set(MPIO_LANGUAGES C)
-
-if (CMAKE_SYSTEM_NAME MATCHES "Darwin")
-	list(APPEND MPIO_LANGUAGES OBJC)
-endif ()
-
 project(mpio
 	VERSION 1.0.1
 	DESCRIPTION "Multi-platform IO library"
 	HOMEPAGE_URL "https://github.com/cfnptr/mpio"
-	LANGUAGES ${MPIO_LANGUAGES})
+	LANGUAGES C)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+	enable_language(OBJC)
+endif ()
 
 configure_file(cmake/defines.h.in mpio/defines.h)
 
 set(MPIO_SOURCES source/directory.c)
 
-if (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	list(APPEND MPIO_SOURCES source/directory.m)
 endif ()
 
