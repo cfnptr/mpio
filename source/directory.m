@@ -17,7 +17,7 @@
 #include <CoreFoundation/CFBundle.h>
 #include <Foundation/NSFileManager.h>
 
-static char macosPath[MAXPATHLEN];
+static char macosPath[MAXPATHLEN + 1];
 
 const char* getDataDirectory(bool isShared)
 {
@@ -44,20 +44,9 @@ const char* getResourcesDirectory()
 		return NULL;
 
 	CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(bundle);
-	CFStringRef lastComponent = CFURLCopyLastPathComponent(resourcesURL);
 
-	if (CFStringCompare(CFSTR("Resources"),
-		lastComponent, 0) != kCFCompareEqualTo)
-	{
-		CFRelease(lastComponent);
-		CFRelease(resourcesURL);
-		return NULL;
-	}
-
-	CFRelease(lastComponent);
-
-	if (!CFURLGetFileSystemRepresentation(resourcesURL, true,
-		(UInt8*)macosPath, MAXPATHLEN))
+	if (!CFURLGetFileSystemRepresentation(resourcesURL,
+		true,  (UInt8*)macosPath, MAXPATHLEN))
 	{
 		CFRelease(resourcesURL);
 		return NULL;
