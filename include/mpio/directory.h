@@ -35,7 +35,7 @@ bool isDirectoryExists(const char* path);
  *
  * path - directory path string.
  */
-bool createDirectory(path);
+bool createDirectory(const char* path);
 /*
  * Returns true if directory exists.
  * path - directory path string.
