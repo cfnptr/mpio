@@ -35,7 +35,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	enable_language(OBJC)
 endif ()
 
-configure_file(cmake/defines.h.in mpio/defines.h)
+configure_file(cmake/defines.h.in include/mpio/defines.h)
 
 set(MPIO_SOURCES source/directory.c)
 
@@ -48,5 +48,5 @@ add_library(mpio-static STATIC
 set_target_properties(mpio-static PROPERTIES
 	OUTPUT_NAME "mpio")
 target_include_directories(mpio-static PUBLIC
-	${PROJECT_BINARY_DIR}
+	${PROJECT_BINARY_DIR}/include
 	${PROJECT_SOURCE_DIR}/include)
