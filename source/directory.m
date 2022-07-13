@@ -36,6 +36,30 @@ const char* getDataDirectory(bool isShared)
 
 	return [string UTF8String];
 }
+const char* getAppDataDirectory(
+	const char* appName,
+	bool isShared)
+{
+	const char* dataDirectory = getDataDirectory(isShared);
+
+	if (!dataDirectory)
+		return false;
+
+	size_t dataPathLength = strlen(dataDirectory);
+	size_t appNameLength = strlen(appName);
+	size_t pathLength = dataPathLength + appNameLength + 1;
+
+	if (pathLength > MAXPATHLEN)
+		return false;
+
+	memcpy(macosPath, dataDirectory,
+		dataPathLength * sizeof(char));
+	macosPath[dataPathLength] = '/';
+	memcpy(macosPath + dataPathLength + 1, appName,
+		appNameLength * sizeof(char));
+	macosPath[dataPathLength + appNameLength + 1] = '\0';
+	return macosPath;
+}
 const char* getResourcesDirectory()
 {
 	CFBundleRef bundle = CFBundleGetMainBundle();

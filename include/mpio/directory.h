@@ -15,7 +15,6 @@
 #pragma once
 #include <stdbool.h>
 
-#if __linux__ || __APPLE__
 /*
  * Create a new directory.
  * Returns true on success.
@@ -28,29 +27,22 @@ bool createDirectory(const char* path);
  * path - directory path string.
  */
 bool isDirectoryExists(const char* path);
-#elif _WIN32
-/*
- * Create a new directory.
- * Returns true on success.
- *
- * path - directory path string.
- */
-bool createDirectory(const char* path);
-/*
- * Returns true if directory exists.
- * path - directory path string.
- */
-bool isDirectoryExists(const char* path);
-#else
-#error Unknown operating system
-#endif
 
 #if __APPLE__
 /*
- * Returns macOS program data directory, or NULL on failure.
+ * Returns macOS application support directory, or NULL on failure.
  * isShared - is directory shared between users.
  */
 const char* getDataDirectory(bool isShared);
+/*
+ * Returns macOS application data directory, or NULL on failure.
+ *
+ * appName - application name string.
+ * isShared - is directory shared between users.
+ */
+const char* getAppDataDirectory(
+	const char* appName,
+	bool isShared);
 /*
  * Returns macOS bundle resources directory, or NULL on failure.
  */
