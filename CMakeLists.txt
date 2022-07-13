@@ -31,6 +31,8 @@ project(mpio
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
 
+option(MPIO_BUILD_SHARED "Build MPIO shared library" ON)
+
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	enable_language(OBJC)
 endif ()
@@ -50,3 +52,22 @@ set_target_properties(mpio-static PROPERTIES
 target_include_directories(mpio-static PUBLIC
 	${PROJECT_BINARY_DIR}/include
 	${PROJECT_SOURCE_DIR}/include)
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+	target_link_libraries(mpio-static PUBLIC
+		"-framework Foundation -framework CoreFoundation")
+endif ()
+
+if (MPIO_BUILD_SHARED)
+	add_library(mpio-shared SHARED
+		${MPIO_SOURCES})
+	set_target_properties(mpio-shared PROPERTIES
+		OUTPUT_NAME "mpio"
+		WINDOWS_EXPORT_ALL_SYMBOLS ON)
+	target_include_directories(mpio-shared PUBLIC
+		${PROJECT_BINARY_DIR}/include
+		${PROJECT_SOURCE_DIR}/include)
+	if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+		target_link_libraries(mpio-shared PUBLIC
+			"-framework Foundation -framework CoreFoundation")
+	endif ()
+endif ()
