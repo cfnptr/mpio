@@ -23,7 +23,7 @@ if (TARGET mpio-static)
 endif ()
 
 project(mpio
-	VERSION 1.0.2
+	VERSION 1.0.3
 	DESCRIPTION "Multi-platform IO library"
 	HOMEPAGE_URL "https://github.com/cfnptr/mpio"
 	LANGUAGES C)
