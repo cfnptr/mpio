@@ -23,7 +23,7 @@ const char* getDataDirectory(bool isShared)
 {
 	NSArray<NSString*>* array = NSSearchPathForDirectoriesInDomains(
 		NSApplicationSupportDirectory,
-		isShared ? isShared : NSUserDomainMask,
+		isShared ? NSLocalDomainMask : NSUserDomainMask,
 		YES);
 
 	if (!array)
