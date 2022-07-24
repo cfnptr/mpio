@@ -45,10 +45,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	list(APPEND MPIO_SOURCES source/directory.m)
 endif ()
 
-add_library(mpio-static STATIC
-	${MPIO_SOURCES})
-set_target_properties(mpio-static PROPERTIES
-	OUTPUT_NAME "mpio")
+add_library(mpio-static STATIC ${MPIO_SOURCES})
 target_include_directories(mpio-static PUBLIC
 	${PROJECT_BINARY_DIR}/include
 	${PROJECT_SOURCE_DIR}/include)
@@ -58,8 +55,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 endif ()
 
 if (MPIO_BUILD_SHARED)
-	add_library(mpio-shared SHARED
-		${MPIO_SOURCES})
+	add_library(mpio-shared SHARED ${MPIO_SOURCES})
 	set_target_properties(mpio-shared PROPERTIES
 		OUTPUT_NAME "mpio"
 		WINDOWS_EXPORT_ALL_SYMBOLS ON)
