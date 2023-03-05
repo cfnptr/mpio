@@ -11,6 +11,7 @@ A library providing generic interface for file system **input / output** operati
 ## Build requirements
 
 * C99 compiler
+* C++11 compiler (optional)
 * Objective-C compiler (macOS only)
 * [Git 2.30+](https://git-scm.com/)
 * [CMake 3.16+](https://cmake.org/)
