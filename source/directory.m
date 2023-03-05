@@ -16,66 +16,59 @@
 #include <sys/param.h>
 #include <CoreFoundation/CFBundle.h>
 #include <Foundation/NSFileManager.h>
+#include <assert.h>
 
-static char macosPath[MAXPATHLEN + 1];
-
-const char* getDataDirectory(bool isShared)
+char* getDataDirectory(bool isShared)
 {
 	NSArray<NSString*>* array = NSSearchPathForDirectoriesInDomains(
 		NSApplicationSupportDirectory,
-		isShared ? NSLocalDomainMask : NSUserDomainMask,
-		YES);
-
-	if (!array)
-		return NULL;
+		isShared ? NSLocalDomainMask : NSUserDomainMask, YES);
+	if (!array) return NULL;
 
 	NSString* string = [array lastObject];
-
-	if (!string)
-		return NULL;
-
-	return [string UTF8String];
+	if (!string) return NULL;
+	size_t length = [string length];
+	char* path = malloc(length + 1);
+	if (!path) return NULL;
+	memcpy(path, [string UTF8String], length + 1);
+	return path;
 }
-const char* getAppDataDirectory(
-	const char* appName,
-	bool isShared)
+char* getAppDataDirectory(const char* appName, bool isShared)
 {
-	const char* dataDirectory = getDataDirectory(isShared);
+	assert(appName);
+	char* dataPath = getDataDirectory(isShared);
+	if (!dataPath) return NULL;
 
-	if (!dataDirectory)
-		return false;
-
-	size_t dataPathLength = strlen(dataDirectory);
+	size_t dataPathLength = strlen(dataPath);
 	size_t appNameLength = strlen(appName);
 	size_t pathLength = dataPathLength + appNameLength + 1;
 
-	if (pathLength > MAXPATHLEN)
-		return false;
+	char* path = realloc(dataPath, pathLength + 1);
+	if (!path) { free(dataPath); return NULL; }
 
-	memcpy(macosPath, dataDirectory,
-		dataPathLength * sizeof(char));
-	macosPath[dataPathLength] = '/';
-	memcpy(macosPath + dataPathLength + 1, appName,
-		appNameLength * sizeof(char));
-	macosPath[dataPathLength + appNameLength + 1] = '\0';
-	return macosPath;
+	path[dataPathLength] = '/';
+	memcpy(path + dataPathLength + 1, appName, appNameLength + 1);
+	return path;
 }
-const char* getResourcesDirectory()
+char* getResourcesDirectory()
 {
 	CFBundleRef bundle = CFBundleGetMainBundle();
+	if (!bundle) return NULL;
 
-	if (!bundle)
-		return NULL;
+	char* string = malloc(MAXPATHLEN + 1);
+	if (!string) return NULL;
 
 	CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(bundle);
-
 	if (!CFURLGetFileSystemRepresentation(resourcesURL,
-		true,  (UInt8*)macosPath, MAXPATHLEN))
+		true, (UInt8*)string, MAXPATHLEN))
 	{
 		CFRelease(resourcesURL);
 		return NULL;
 	}
 
 	CFRelease(resourcesURL);
-	return macosPath;
+	size_t length = strlen(string);
+	char* path = realloc(string, length + 1);
+	if (!path) return string;
+	return path;
 }

@@ -16,35 +16,35 @@
 #include <stdbool.h>
 
 /*
- * Create a new directory.
+ * Create a new directory. (MT-Safe)
  * Returns true on success.
  *
  * path - directory path string.
  */
 bool createDirectory(const char* path);
 /*
- * Returns true if directory exists.
+ * Returns true if directory exists. (MT-Safe)
  * path - directory path string.
  */
 bool isDirectoryExists(const char* path);
 
-#if __APPLE__
 /*
- * Returns macOS application support directory, or NULL on failure.
+ * Returns application data directory, or NULL on failure. (MT-Safe)
+ * Allocated string is not automatically destroyed!
+ * 
  * isShared - is directory shared between users.
  */
-const char* getDataDirectory(bool isShared);
+char* getDataDirectory(bool isShared);
 /*
- * Returns macOS application data directory, or NULL on failure.
+ * Returns application data directory + name, or NULL on failure. (MT-Safe)
+ * Allocated string is not automatically destroyed!
  *
  * appName - application name string.
  * isShared - is directory shared between users.
  */
-const char* getAppDataDirectory(
-	const char* appName,
-	bool isShared);
+char* getAppDataDirectory(const char* appName, bool isShared);
 /*
- * Returns macOS bundle resources directory, or NULL on failure.
+ * Returns bundle resources directory, or NULL on failure. (MT-Safe)
+ * Allocated string is not automatically destroyed!
  */
-const char* getResourcesDirectory();
-#endif
+char* getResourcesDirectory();
