@@ -14,56 +14,52 @@
 
 cmake_minimum_required(VERSION 3.16)
 
-if (${CMAKE_SOURCE_DIR} MATCHES ${CMAKE_BINARY_DIR})
+if(${CMAKE_SOURCE_DIR} MATCHES ${CMAKE_BINARY_DIR})
 	message(FATAL_ERROR "Prevented in-tree build")
-endif ()
+endif()
 
-if (TARGET mpio-static)
+if(TARGET mpio-static)
 	return()
-endif ()
+endif()
 
-project(mpio
-	VERSION 1.0.4
+project(mpio VERSION 1.0.4 LANGUAGES C
 	DESCRIPTION "Multi-platform IO library"
-	HOMEPAGE_URL "https://github.com/cfnptr/mpio"
-	LANGUAGES C)
+	HOMEPAGE_URL "https://github.com/cfnptr/mpio")
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
 
 option(MPIO_BUILD_SHARED "Build MPIO shared library" ON)
 
-if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	enable_language(OBJC)
-endif ()
+endif()
 
 configure_file(cmake/defines.h.in include/mpio/defines.h)
 
 set(MPIO_SOURCES source/directory.c)
-
-if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	list(APPEND MPIO_SOURCES source/directory.m)
-endif ()
+endif()
 
 add_library(mpio-static STATIC ${MPIO_SOURCES})
 target_include_directories(mpio-static PUBLIC
-	${PROJECT_BINARY_DIR}/include
-	${PROJECT_SOURCE_DIR}/include)
-if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+	${PROJECT_BINARY_DIR}/include ${PROJECT_SOURCE_DIR}/include
+	${PROJECT_SOURCE_DIR}/wrappers/cpp)
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	target_link_libraries(mpio-static PUBLIC
 		"-framework Foundation -framework CoreFoundation")
-endif ()
+endif()
 
-if (MPIO_BUILD_SHARED)
+if(MPIO_BUILD_SHARED)
 	add_library(mpio-shared SHARED ${MPIO_SOURCES})
 	set_target_properties(mpio-shared PROPERTIES
-		OUTPUT_NAME "mpio"
-		WINDOWS_EXPORT_ALL_SYMBOLS ON)
+		OUTPUT_NAME "mpio" WINDOWS_EXPORT_ALL_SYMBOLS ON)
 	target_include_directories(mpio-shared PUBLIC
-		${PROJECT_BINARY_DIR}/include
-		${PROJECT_SOURCE_DIR}/include)
-	if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+		${PROJECT_BINARY_DIR}/include ${PROJECT_SOURCE_DIR}/include)
+	if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 		target_link_libraries(mpio-shared PUBLIC
 			"-framework Foundation -framework CoreFoundation")
-	endif ()
-endif ()
+	endif()
+endif()

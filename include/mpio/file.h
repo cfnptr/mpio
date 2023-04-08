@@ -22,9 +22,7 @@
 	fseeko(file, offset, whence)
 #define tellFile(file) ftello(file)
 #elif _WIN32
-inline static FILE* openFile(
-	const char* filePath,
-	const char* mode)
+inline static FILE* openFile(const char* filePath, const char* mode)
 {
 	FILE* file;
 
