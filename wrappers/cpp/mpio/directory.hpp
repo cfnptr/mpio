@@ -19,7 +19,7 @@ extern "C"
 #include "mpio/directory.h"
 }
 
-#include <string_view>
+#include <string>
 
 namespace mpio
 {
@@ -35,17 +35,17 @@ public:
 	 *
 	 * path - directory path string.
 	 */
-	static bool create(string_view path)
+	static bool create(const string& path)
 	{
-		return createDirectory(path.data());
+		return createDirectory(path.c_str());
 	}
 	/*
 	 * Returns true if directory exists.
 	 * path - directory path string.
 	 */
-	static bool isExists(string_view path)
+	static bool isExists(const string& path)
 	{
-		return isDirectoryExists(path.data());
+		return isDirectoryExists(path.c_str());
 	}
 
 	/*
@@ -66,9 +66,9 @@ public:
 	 * appName - application name string.
 	 * isShared - is directory shared between users.
 	 */
-	static string getAppDataPath(const char* appName, bool isShared = false)
+	static string getAppDataPath(const string& appName, bool isShared = false)
 	{
-		auto dataPath = getAppDataDirectory(appName, isShared);
+		auto dataPath = getAppDataDirectory(appName.c_str(), isShared);
 		if (!dataPath) throw runtime_error("Failed to get app data directory.");
 		auto path = string(dataPath);
 		free(dataPath);
