@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "mpio/directory.h"
+#include <stdio.h>
 #include <assert.h>
 
 #if __linux__ || __APPLE__
