@@ -20,12 +20,12 @@
 
 bool createDirectory(const char* path)
 {
-	assert(path);
+	assert(path != NULL);
 	return mkdir(path, 0777) == 0;
 }
 bool isDirectoryExists(const char* path)
 {
-	assert(path);
+	assert(path != NULL);
 	struct stat sb;
 	return stat(path, &sb) == 0 && S_ISDIR(sb.st_mode);
 }
@@ -47,7 +47,7 @@ char* getDataDirectory(bool isShared)
 }
 char* getAppDataDirectory(const char* appName, bool isShared)
 {
-	assert(appName);
+	assert(appName != NULL);
 	char* dataPath = getDataDirectory(isShared);
 	if (!dataPath) return NULL;
 
@@ -82,12 +82,12 @@ char* getResourcesDirectory()
 
 bool createDirectory(const char* path)
 {
-	assert(path);
+	assert(path != NULL);
 	return CreateDirectoryA(path, NULL) == TRUE;
 }
 bool isDirectoryExists(const char* path)
 {
-	assert(path);
+	assert(path != NULL);
 	DWORD attribs = GetFileAttributes(path);
 
 	return (attribs != INVALID_FILE_ATTRIBUTES &&
@@ -113,7 +113,7 @@ char* getDataDirectory(bool isShared)
 }
 char* getAppDataDirectory(const char* appName, bool isShared)
 {
-	assert(appName);
+	assert(appName != NULL);
 	char* dataPath = getDataDirectory(isShared);
 	if (!dataPath) return NULL;
 

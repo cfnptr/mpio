@@ -35,7 +35,7 @@ char* getDataDirectory(bool isShared)
 }
 char* getAppDataDirectory(const char* appName, bool isShared)
 {
-	assert(appName);
+	assert(appName != NULL);
 	char* dataPath = getDataDirectory(isShared);
 	if (!dataPath) return NULL;
 
