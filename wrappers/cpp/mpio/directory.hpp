@@ -19,7 +19,7 @@ extern "C"
 #include "mpio/directory.h"
 }
 
-#include <string>
+#include <filesystem>
 
 namespace mpio
 {
@@ -35,7 +35,7 @@ public:
 	 *
 	 * path - directory path string.
 	 */
-	static bool create(const string& path)
+	static bool create(const filesystem::path& path)
 	{
 		return createDirectory(path.c_str());
 	}
@@ -43,7 +43,7 @@ public:
 	 * Returns true if directory exists.
 	 * path - directory path string.
 	 */
-	static bool isExists(const string& path)
+	static bool isExists(const filesystem::path& path)
 	{
 		return isDirectoryExists(path.c_str());
 	}
@@ -52,11 +52,11 @@ public:
 	 * Returns application data directory, or throws on failure.
 	 * isShared - is directory shared between users.
 	 */
-	static string getDataPath(bool isShared = false)
+	static filesystem::path getDataPath(bool isShared = false)
 	{
 		auto dataPath = getDataDirectory(isShared);
 		if (!dataPath) throw runtime_error("Failed to get data directory.");
-		auto path = string(dataPath);
+		auto path = filesystem::path(dataPath);
 		free(dataPath);
 		return path;
 	}
@@ -66,22 +66,22 @@ public:
 	 * appName - application name string.
 	 * isShared - is directory shared between users.
 	 */
-	static string getAppDataPath(const string& appName, bool isShared = false)
+	static filesystem::path getAppDataPath(const string& appName, bool isShared = false)
 	{
 		auto dataPath = getAppDataDirectory(appName.c_str(), isShared);
 		if (!dataPath) throw runtime_error("Failed to get app data directory.");
-		auto path = string(dataPath);
+		auto path = filesystem::path(dataPath);
 		free(dataPath);
 		return path;
 	}
 	/*
 	 * Returns bundle resources directory, or throws on failure.
 	 */
-	static string getResourcesPath()
+	static filesystem::path getResourcesPath()
 	{
 		auto dataPath = getResourcesDirectory();
 		if (!dataPath) throw runtime_error("Failed to get resources directory.");
-		auto path = string(dataPath);
+		auto path = filesystem::path(dataPath);
 		free(dataPath);
 		return path;
 	}
