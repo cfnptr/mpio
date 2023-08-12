@@ -37,7 +37,8 @@ public:
 	 */
 	static bool create(const filesystem::path& path)
 	{
-		return createDirectory(path.c_str());
+		auto string = path.generic_string();
+		return createDirectory(string.c_str());
 	}
 	/*
 	 * Returns true if directory exists.
@@ -45,7 +46,8 @@ public:
 	 */
 	static bool isExists(const filesystem::path& path)
 	{
-		return isDirectoryExists(path.c_str());
+		auto string = path.generic_string();
+		return isDirectoryExists(string.c_str());
 	}
 
 	/*
