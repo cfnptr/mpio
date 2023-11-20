@@ -13,28 +13,24 @@
 // limitations under the License.
 
 #pragma once
-#include <stdio.h>
+#include <stdint.h>
 
-#if __linux__ || __APPLE__
-#define openFile(filePath, mode) \
-	fopen(filePath, mode)
-#define seekFile(file, offset, whence) \
-	fseeko(file, offset, whence)
-#define tellFile(file) ftello(file)
-#elif _WIN32
-inline static FILE* openFile(const char* filePath, const char* mode)
-{
-	FILE* file;
-	errno_t error = fopen_s(&file, filePath, mode);
-	if (error != 0) return NULL;
-	return file;
-}
+/*
+ * Returns current clock value (s).
+ */
+double getCurrentClock();
 
-#define seekFile(file, offset, whence) \
-	_fseeki64(file, offset, whence)
-#define tellFile(file) _ftelli64(file)
-#else
-#error Unsupported operating system
-#endif
+/*
+ * Returns running system logical CPU count.
+ */
+int getCpuCount();
 
-#define closeFile(file) fclose(file)
+/*
+ * Returns running system total RAM size.
+ */
+int64_t getRamSize();
+
+/*
+ * Returns running system CPU name string.
+ */
+const char* getCpuName();

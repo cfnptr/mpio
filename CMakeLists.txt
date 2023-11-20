@@ -37,15 +37,16 @@ endif()
 
 configure_file(cmake/defines.h.in include/mpio/defines.h)
 
-set(MPIO_SOURCES source/directory.c)
+set(MPIO_SOURCES source/directory.c source/os.c)
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	list(APPEND MPIO_SOURCES source/directory.m)
 endif()
 
+set(MPIO_INCLUDE_DIRS ${PROJECT_BINARY_DIR}/include
+	${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/wrappers/cpp)
+
 add_library(mpio-static STATIC ${MPIO_SOURCES})
-target_include_directories(mpio-static PUBLIC
-	${PROJECT_BINARY_DIR}/include ${PROJECT_SOURCE_DIR}/include
-	${PROJECT_SOURCE_DIR}/wrappers/cpp)
+target_include_directories(mpio-static PUBLIC ${MPIO_INCLUDE_DIRS})
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	target_link_libraries(mpio-static PUBLIC
@@ -56,8 +57,7 @@ if(MPIO_BUILD_SHARED)
 	add_library(mpio-shared SHARED ${MPIO_SOURCES})
 	set_target_properties(mpio-shared PROPERTIES
 		OUTPUT_NAME "mpio" WINDOWS_EXPORT_ALL_SYMBOLS ON)
-	target_include_directories(mpio-shared PUBLIC
-		${PROJECT_BINARY_DIR}/include ${PROJECT_SOURCE_DIR}/include)
+	target_include_directories(mpio-shared PUBLIC ${MPIO_INCLUDE_DIRS})
 	if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 		target_link_libraries(mpio-shared PUBLIC
 			"-framework Foundation -framework CoreFoundation")
