@@ -14,7 +14,7 @@
 
 cmake_minimum_required(VERSION 3.16)
 
-if(${CMAKE_SOURCE_DIR} MATCHES ${CMAKE_BINARY_DIR})
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
 	message(FATAL_ERROR "Prevented in-tree build")
 endif()
 
@@ -31,14 +31,14 @@ set(CMAKE_C_STANDARD_REQUIRED TRUE)
 
 option(MPIO_BUILD_SHARED "Build MPIO shared library" ON)
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 	enable_language(OBJC)
 endif()
 
 configure_file(cmake/defines.h.in include/mpio/defines.h)
 
 set(MPIO_SOURCES source/directory.c source/os.c)
-if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 	list(APPEND MPIO_SOURCES source/directory.m)
 endif()
 
@@ -48,7 +48,7 @@ set(MPIO_INCLUDE_DIRS ${PROJECT_BINARY_DIR}/include
 add_library(mpio-static STATIC ${MPIO_SOURCES})
 target_include_directories(mpio-static PUBLIC ${MPIO_INCLUDE_DIRS})
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 	target_link_libraries(mpio-static PUBLIC
 		"-framework Foundation -framework CoreFoundation")
 endif()
@@ -58,7 +58,7 @@ if(MPIO_BUILD_SHARED)
 	set_target_properties(mpio-shared PROPERTIES
 		OUTPUT_NAME "mpio" WINDOWS_EXPORT_ALL_SYMBOLS ON)
 	target_include_directories(mpio-shared PUBLIC ${MPIO_INCLUDE_DIRS})
-	if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+	if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 		target_link_libraries(mpio-shared PUBLIC
 			"-framework Foundation -framework CoreFoundation")
 	endif()
