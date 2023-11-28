@@ -2,6 +2,13 @@
 
 A library providing generic interface for file system **input / output** operations across different platforms.
 
+## Features
+
+* Common director and file functions
+* App data and resources path getters
+* CPU name, RAM size, CPU count getters
+* Current clock (time) getter
+
 ## Supported operating systems
 
 * Ubuntu
