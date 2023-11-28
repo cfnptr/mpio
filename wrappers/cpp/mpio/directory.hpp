@@ -35,7 +35,7 @@ public:
 	 *
 	 * path - directory path string.
 	 */
-	static bool create(const filesystem::path& path)
+	static bool create(const filesystem::path& path) noexcept
 	{
 		auto string = path.generic_string();
 		return createDirectory(string.c_str());
@@ -44,7 +44,7 @@ public:
 	 * Returns true if directory exists.
 	 * path - directory path string.
 	 */
-	static bool isExists(const filesystem::path& path)
+	static bool isExists(const filesystem::path& path) noexcept
 	{
 		auto string = path.generic_string();
 		return isDirectoryExists(string.c_str());

@@ -99,7 +99,7 @@ char* getDataDirectory(bool isShared)
 {
 	PWSTR wideDataPath;
 	HRESULT result = SHGetKnownFolderPath(
-		isShared ? &FOLDERID_ProgramData : &FOLDERID_LocalAppData,
+		isShared ? &FOLDERID_ProgramData : &FOLDERID_RoamingAppData,
 		0, NULL, &wideDataPath);
 	if (FAILED(result)) return NULL;
 
