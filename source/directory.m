@@ -41,9 +41,7 @@ char* getAppDataDirectory(const char* appName, bool isShared)
 
 	size_t dataPathLength = strlen(dataPath);
 	size_t appNameLength = strlen(appName);
-	size_t pathLength = dataPathLength + appNameLength + 1;
-
-	char* path = realloc(dataPath, pathLength + 1);
+	char* path = realloc(dataPath, dataPathLength + appNameLength + 2);
 	if (!path) { free(dataPath); return NULL; }
 
 	path[dataPathLength] = '/';

@@ -54,9 +54,7 @@ char* getAppDataDirectory(const char* appName, bool isShared)
 
 	size_t dataPathLength = strlen(dataPath);
 	size_t appNameLength = strlen(appName);
-	size_t pathLength = dataPathLength + appNameLength + 2;
-
-	char* path = realloc(dataPath, pathLength + 1);
+	char* path = realloc(dataPath, dataPathLength + appNameLength + 3);
 	if (!path) { free(dataPath); return NULL; }
 
 	path[dataPathLength] = '/';
@@ -101,15 +99,18 @@ char* getDataDirectory(bool isShared)
 	HRESULT result = SHGetKnownFolderPath(
 		isShared ? &FOLDERID_ProgramData : &FOLDERID_RoamingAppData,
 		0, NULL, &wideDataPath);
-	if (FAILED(result)) return NULL;
+	if (FAILED(result)) { CoTaskMemFree(wideDataPath); return NULL; }
 
 	size_t wideLength = wcslen(wideDataPath);
-	char* dataPath = malloc(wideLength * 2 + 1);
-	size_t length = wcstombs(dataPath, wideDataPath, wideLength * 2);
-	if (length == (size_t)-1) return NULL;
+	char* dataPath = malloc(wideLength * 4 + 1);
+	size_t length = wcstombs(dataPath, wideDataPath, wideLength * 4);
+	CoTaskMemFree(wideDataPath);
+	if (length == (size_t)-1) { free(dataPath); return NULL; }
 
 	char* path = realloc(dataPath, length + 1);
-	if (!path) return dataPath;
+	if (!path) { free(dataPath); return NULL; }
+
+	path[length] = '\0';
 	return path;
 }
 char* getAppDataDirectory(const char* appName, bool isShared)
@@ -120,13 +121,10 @@ char* getAppDataDirectory(const char* appName, bool isShared)
 
 	size_t dataPathLength = strlen(dataPath);
 	size_t appNameLength = strlen(appName);
-	size_t pathLength = dataPathLength + appNameLength + 1;
-
-	char* path = realloc(dataPath, pathLength + 1);
+	char* path = realloc(dataPath, dataPathLength + appNameLength + 2);
 	if (!path) { free(dataPath); return NULL; }
 
-	memcpy(path, dataPath, dataPathLength);
-	path[dataPathLength] = '/';
+	path[dataPathLength] = '\\';
 	memcpy(path + dataPathLength + 1, appName, appNameLength + 1);
 	return path;
 }
