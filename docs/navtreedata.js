@@ -24,8 +24,14 @@
 */
 var NAVTREE =
 [
-  [ "Pack", "index.html", [
-    [ "MPIO", "index.html", "index" ],
+  [ "MPIO", "index.html", [
+    [ "Features", "index.html#features", null ],
+    [ "Supported operating systems", "index.html#supported-operating-systems", null ],
+    [ "Build requirements", "index.html#build-requirements", [
+      [ "CMake options", "index.html#cmake-options", null ]
+    ] ],
+    [ "Cloning", "index.html#cloning", null ],
+    [ "Building", "index.html#building-cihttpsgithubcomcfnptrmpioactionsworkflowscmakeymlbadgesvg", null ],
     [ "Build instructions", "md__b_u_i_l_d_i_n_g.html", [
       [ "Operating Systems", "md__b_u_i_l_d_i_n_g.html#operating-systems", null ],
       [ "Windows (10/11)", "md__b_u_i_l_d_i_n_g.html#windows-1011", [
