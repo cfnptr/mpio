@@ -1,4 +1,4 @@
-// Copyright 2021-2023 Nikita Fediuchin. All rights reserved.
+// Copyright 2021-2024 Nikita Fediuchin. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,6 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+/***********************************************************************************************************************
+ * @file
+ * @brief Common directory functions.
+ * @details See the @ref directory.h
+ **********************************************************************************************************************/
 
 #pragma once
 
@@ -26,33 +32,20 @@ namespace mpio
 
 using namespace std;
 
+/**
+ * @brief Common directory functions.
+ * @details See the @ref directory.h
+ */
 class Directory
 {
 public:
-	/*
-	 * Create a new directory.
-	 * Returns true on success.
-	 *
-	 * path - directory path string.
-	 */
-	static bool create(const filesystem::path& path) noexcept
-	{
-		auto string = path.generic_string();
-		return createDirectory(string.c_str());
-	}
-	/*
-	 * Returns true if directory exists.
-	 * path - directory path string.
-	 */
-	static bool isExists(const filesystem::path& path) noexcept
-	{
-		auto string = path.generic_string();
-		return isDirectoryExists(string.c_str());
-	}
-
-	/*
-	 * Returns application data directory, or throws on failure.
-	 * isShared - is directory shared between users.
+	/**
+	 * @brief Returns application data directory. (MT-Safe)
+	 * @details See the @ref getDataDirectory().
+	 * 
+	 * @param isShared is data directory shared between multiple users
+	 * @return Data directory path on success.
+	 * @throw runtime_error if failed to get data directory.
 	 */
 	static filesystem::path getDataPath(bool isShared = false)
 	{
@@ -62,11 +55,15 @@ public:
 		free(dataPath);
 		return path;
 	}
-	/*
-	 * Returns application data directory + name, or throws on failure.
+
+	/**
+	 * @brief Returns application data directory + name. (MT-Safe)
+	 * @details See the @ref getAppDataDirectory().
 	 *
-	 * appName - application name string.
-	 * isShared - is directory shared between users.
+	 * @param appName target application name string
+	 * @param isShared is data directory shared between multiple users
+	 * @return Data directory path on success.
+	 * @throw runtime_error if failed to get app data directory.
 	 */
 	static filesystem::path getAppDataPath(const string& appName, bool isShared = false)
 	{
@@ -76,8 +73,13 @@ public:
 		free(dataPath);
 		return path;
 	}
-	/*
-	 * Returns bundle resources directory, or throws on failure.
+
+	/**
+	 * @brief Returns bundled resources directory. (MT-Safe)
+	 * @details See the @ref getResourcesDirectory().
+	 * 
+	 * @return Resources directory path on success.
+	 * @throw runtime_error if failed to get resources directory.
 	 */
 	static filesystem::path getResourcesPath()
 	{
@@ -87,6 +89,8 @@ public:
 		free(dataPath);
 		return path;
 	}
+
+	// Use std:: functions instead of createDirectory(), isDirectoryExists()
 };
 
 } // mpio

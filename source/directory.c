@@ -1,4 +1,4 @@
-// Copyright 2021-2023 Nikita Fediuchin. All rights reserved.
+// Copyright 2021-2024 Nikita Fediuchin. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -101,11 +101,15 @@ char* getDataDirectory(bool isShared)
 		0, NULL, &wideDataPath);
 	if (FAILED(result)) { CoTaskMemFree(wideDataPath); return NULL; }
 
+	size_t length = 0;
 	size_t wideLength = wcslen(wideDataPath);
-	char* dataPath = malloc(wideLength * 4 + 1);
-	size_t length = wcstombs(dataPath, wideDataPath, wideLength * 4);
+	size_t byteSize = wideLength * 4 + 1;
+	char* dataPath = malloc(byteSize);
+	if (!dataPath) { CoTaskMemFree(wideDataPath); return NULL; }
+
+	errno_t error = wcstombs_s(&length, dataPath, byteSize, wideDataPath, wideLength * 4);
 	CoTaskMemFree(wideDataPath);
-	if (length == (size_t)-1) { free(dataPath); return NULL; }
+	if (error != 0) { free(dataPath); return NULL; }
 
 	char* path = realloc(dataPath, length + 1);
 	if (!path) { free(dataPath); return NULL; }

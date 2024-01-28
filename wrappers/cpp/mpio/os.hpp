@@ -1,4 +1,4 @@
-// Copyright 2021-2023 Nikita Fediuchin. All rights reserved.
+// Copyright 2021-2024 Nikita Fediuchin. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,8 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/***********************************************************************************************************************
+ * @file
+ * @brief Common operating system functions.
+ * @details See the @ref os.h
+ **********************************************************************************************************************/
+
 #pragma once
-#include <string_view>
+#include <string>
 
 extern "C"
 {
@@ -25,39 +31,52 @@ namespace mpio
 
 using namespace std;
 
+/**
+ * @brief Common operating system functions.
+ * @details See the @ref os.h
+ */
 class OS
 {
 public:
-	/*
-	 * Returns current clock value (s).
+	/**
+	 * @brief Returns high resolution time stamp in seconds. (MT-Safe)
+	 * @details See the @ref getCurrentClock().
 	 */
 	static double getCurrentClock() noexcept
 	{
 		return ::getCurrentClock();
 	}
 
-	/*
-	 * Returns running system logical CPU count.
+	/**
+	 * @brief Returns running system logical CPU count. (MT-Safe)
+	 * @details See the @ref getCpuCount().
 	 */
 	static int getCpuCount() noexcept
 	{
 		return ::getCpuCount();
 	}
 
-	/*
-	 * Returns running system total RAM size.
+	/**
+	 * @brief Returns running system total RAM size. (MT-Safe)
+	 * @details See the @ref getRamSize().
 	 */
 	static int64_t getRamSize() noexcept
 	{
 		return ::getRamSize();
 	}
 
-	/*
-	 * Returns running system CPU name string.
+	/**
+	 * @brief Returns running system CPU name string. (MT-Safe)
+	 * @details See the @ref getCpuName().
+	 * @throw runtime_error if failed to get CPU name.
 	 */
-	static string_view getCpuName() noexcept
+	static string getCpuName()
 	{
-		return ::getCpuName();
+		auto cpuName = ::getCpuName();
+		if (!cpuName) throw runtime_error("Failed to get CPU name.");
+		auto cpuString = string(cpuName);
+		free(cpuName);
+		return cpuString;
 	}
 };
 

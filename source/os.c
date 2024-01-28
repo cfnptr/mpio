@@ -1,4 +1,4 @@
-// Copyright 2021-2023 Nikita Fediuchin. All rights reserved.
+// Copyright 2021-2024 Nikita Fediuchin. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -84,9 +84,7 @@ int64_t getRamSize()
 #endif
 }
 
-static char cpuBrand[65];
-
-const char* getCpuName()
+char* getCpuName()
 {
 #if __x86_64__ || _M_X64 || __i386__
 	unsigned int cpuInfo[4] = { 0, 0, 0, };
@@ -97,9 +95,10 @@ const char* getCpuName()
 	__cpuid((int*)cpuInfo, 0x80000000);
 #endif
 
-	unsigned int nExIds = cpuInfo[0];
-	memset(cpuBrand, 0, sizeof(cpuBrand));
+	char* cpuBrand = calloc(65, sizeof(char));
+	if (!cpuBrand) return NULL;
 
+	unsigned int nExIds = cpuInfo[0];
 	for (unsigned int i = 0x80000000; i <= nExIds; ++i)
 	{
 #if __linux__ || __APPLE__

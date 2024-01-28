@@ -1,4 +1,4 @@
-// Copyright 2021-2023 Nikita Fediuchin. All rights reserved.
+// Copyright 2021-2024 Nikita Fediuchin. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,25 +12,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/***********************************************************************************************************************
+ * @file
+ * @brief Common operating system functions.
+ **********************************************************************************************************************/
+
 #pragma once
 #include <stdint.h>
 
-/*
- * Returns current clock value (s).
+/**
+ * @brief Returns high resolution time stamp in seconds. (MT-Safe)
+ * @details That can be used for time-interval measurements.
+ * @return The time since some unspecified starting point.
  */
 double getCurrentClock();
 
-/*
- * Returns running system logical CPU count.
+/**
+ * @brief Returns running system logical CPU count. (MT-Safe)
+ * @details Usefull for a thread pool thread count.
  */
 int getCpuCount();
 
-/*
- * Returns running system total RAM size.
+/**
+ * @brief Returns running system total RAM size. (MT-Safe)
+ * @details Usefull for a OS information logging.
  */
 int64_t getRamSize();
 
-/*
- * Returns running system CPU name string.
+/**
+ * @brief Returns running system CPU name string. (MT-Safe)
+ * @details Usefull for a OS information logging.
+ * @note You should free() the allocated string manually.
+ * @return An allocated CPU name string.
  */
-const char* getCpuName();
+char* getCpuName();

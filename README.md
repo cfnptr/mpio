@@ -1,19 +1,22 @@
-# MPIO ![CI](https://github.com/cfnptr/mpio/actions/workflows/cmake.yml/badge.svg)
+# MPIO
 
-A library providing generic interface for file system **input / output** operations across different platforms.
+A [library](https://github.com/cfnptr/mpio) providing generic interface for file system **input / output** operations across different platforms.
+
+See the [documentation](https://cfnptr.github.io/mpio).
 
 ## Features
 
-* Common director and file functions
+* Common directory and file functions
 * App data and resources path getters
 * CPU name, RAM size, CPU count getters
-* Current clock (time) getter
+* Current clock (time stamp) getter
+* C and C++ implementations
 
 ## Supported operating systems
 
-* Ubuntu
-* MacOS
 * Windows
+* macOS
+* Ubuntu (Linux)
 
 ## Build requirements
 
@@ -22,6 +25,8 @@ A library providing generic interface for file system **input / output** operati
 * Objective-C compiler (macOS only)
 * [Git 2.30+](https://git-scm.com/)
 * [CMake 3.16+](https://cmake.org/)
+
+Use building [instructions](BUILDING.md) to install all required tools and libraries.
 
 ### CMake options
 
@@ -34,3 +39,8 @@ A library providing generic interface for file system **input / output** operati
 ```
 git clone https://github.com/cfnptr/mpio
 ```
+
+## Building ![CI](https://github.com/cfnptr/mpio/actions/workflows/cmake.yml/badge.svg)
+
+* Windows: ```./scripts/build-release.bat```
+* macOS / Ubuntu: ```./scripts/build-release.sh```
