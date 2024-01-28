@@ -5,99 +5,99 @@
   xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
       http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
   <url>
-    <loc>https://cfnptr.github.io/pack/file_8h.html</loc>
+    <loc>https://cfnptr.github.io/mpio/file_8h.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/directory_8hpp.html</loc>
+    <loc>https://cfnptr.github.io/mpio/os_8h.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/directory_8h.html</loc>
+    <loc>https://cfnptr.github.io/mpio/directory_8h.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/os_8hpp.html</loc>
+    <loc>https://cfnptr.github.io/mpio/directory_8hpp.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/os_8h.html</loc>
+    <loc>https://cfnptr.github.io/mpio/os_8hpp.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/md__b_u_i_l_d_i_n_g.html</loc>
+    <loc>https://cfnptr.github.io/mpio/md__b_u_i_l_d_i_n_g.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/classmpio_1_1_directory.html</loc>
+    <loc>https://cfnptr.github.io/mpio/classmpio_1_1_o_s.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/classmpio_1_1_o_s.html</loc>
+    <loc>https://cfnptr.github.io/mpio/classmpio_1_1_directory.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/dir_0af74dce6ed792f14cfe74ff7f287b3e.html</loc>
+    <loc>https://cfnptr.github.io/mpio/dir_0af74dce6ed792f14cfe74ff7f287b3e.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/dir_d44c64559bbebec7f509842c48db8b23.html</loc>
+    <loc>https://cfnptr.github.io/mpio/dir_d44c64559bbebec7f509842c48db8b23.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/dir_50ef7a3c260ecc04b67ae703ebb5de74.html</loc>
+    <loc>https://cfnptr.github.io/mpio/dir_50ef7a3c260ecc04b67ae703ebb5de74.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/dir_6044ab57abda4ea3e0dfc9336fd9f6a3.html</loc>
+    <loc>https://cfnptr.github.io/mpio/dir_6044ab57abda4ea3e0dfc9336fd9f6a3.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/dir_5cec92fd47c0900910bbc2480fdfd7be.html</loc>
+    <loc>https://cfnptr.github.io/mpio/dir_5cec92fd47c0900910bbc2480fdfd7be.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/index.html</loc>
+    <loc>https://cfnptr.github.io/mpio/index.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/doxygen_crawl.html</loc>
+    <loc>https://cfnptr.github.io/mpio/doxygen_crawl.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/pages.html</loc>
+    <loc>https://cfnptr.github.io/mpio/pages.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/annotated.html</loc>
+    <loc>https://cfnptr.github.io/mpio/annotated.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/classes.html</loc>
+    <loc>https://cfnptr.github.io/mpio/classes.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/functions.html</loc>
+    <loc>https://cfnptr.github.io/mpio/functions.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/functions_func.html</loc>
+    <loc>https://cfnptr.github.io/mpio/functions_func.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/files.html</loc>
+    <loc>https://cfnptr.github.io/mpio/files.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/globals.html</loc>
+    <loc>https://cfnptr.github.io/mpio/globals.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/globals.html</loc>
+    <loc>https://cfnptr.github.io/mpio/globals.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/globals.html</loc>
+    <loc>https://cfnptr.github.io/mpio/globals.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/globals.html</loc>
+    <loc>https://cfnptr.github.io/mpio/globals.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/globals.html</loc>
+    <loc>https://cfnptr.github.io/mpio/globals.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/globals_func.html</loc>
+    <loc>https://cfnptr.github.io/mpio/globals_func.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/globals_func.html</loc>
+    <loc>https://cfnptr.github.io/mpio/globals_func.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/globals_func.html</loc>
+    <loc>https://cfnptr.github.io/mpio/globals_func.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/globals_defs.html</loc>
+    <loc>https://cfnptr.github.io/mpio/globals_defs.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/globals_defs.html</loc>
+    <loc>https://cfnptr.github.io/mpio/globals_defs.html</loc>
   </url>
   <url>
-    <loc>https://cfnptr.github.io/pack/globals_defs.html</loc>
+    <loc>https://cfnptr.github.io/mpio/globals_defs.html</loc>
   </url>
 </urlset>

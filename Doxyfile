@@ -1647,7 +1647,7 @@ TOC_EXPAND             = NO
 # protocol see https://www.sitemaps.org
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-SITEMAP_URL            = https://cfnptr.github.io/pack
+SITEMAP_URL            = https://cfnptr.github.io/mpio
 
 # If the GENERATE_QHP tag is set to YES and both QHP_NAMESPACE and
 # QHP_VIRTUAL_FOLDER are set, an additional index file will be generated that
@@ -2505,7 +2505,7 @@ TAGFILES               = cppreference-doxygen/web.tag.xml=https://en.cppreferenc
 # tag file that is based on the input files it reads. See section "Linking to
 # external documentation" for more information about the usage of tag files.
 
-GENERATE_TAGFILE       = pack.tag.xml
+GENERATE_TAGFILE       = mpio.tag.xml
 
 # If the ALLEXTERNALS tag is set to YES, all external classes and namespaces
 # will be listed in the class and namespace index. If set to NO, only the
