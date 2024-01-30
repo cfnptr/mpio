@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 inline static bool testGetCurrentClock()
 {
@@ -83,7 +84,7 @@ inline static bool testGetCpuName()
 		return false;
 	}
 
-	printf("CPU name: %s", cpuName);
+	printf("CPU name: %s\n", cpuName);
 	free(cpuName);
 	return true;
 }

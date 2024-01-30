@@ -33,6 +33,7 @@
 #include <sys/sysinfo.h>
 #elif __APPLE__
 #include <sys/sysctl.h>
+#include <mach/mach_host.h>
 #endif
 
 #if !__x86_64__ && !_M_X64 && !__i386__
@@ -96,7 +97,7 @@ int64_t getFreeRamSize()
 	vm_statistics64_data_t vmstat;
 	if(host_statistics64(mach_host_self(), HOST_VM_INFO64,
 		(host_info64_t)&vmstat, &count) != KERN_SUCCESS) return -1;
-	return (int64_t)vmstats.free_count * (int64_t)getpagesize();
+	return (vmstat.inactive_count + vmstat.free_count) * (int64_t)getpagesize() / (1024 * 1024 * 1024);
 #elif _WIN32
 	MEMORYSTATUSEX statex;
 	statex.dwLength = sizeof(statex);
@@ -107,6 +108,9 @@ int64_t getFreeRamSize()
 
 char* getCpuName()
 {
+	char* cpuName = calloc(65, sizeof(char));
+	if (!cpuName) return NULL;
+
 #if __x86_64__ || _M_X64 || __i386__
 	unsigned int cpuInfo[4] = { 0, 0, 0, };
 
@@ -115,9 +119,6 @@ char* getCpuName()
 #elif _WIN32
 	__cpuid((int*)cpuInfo, 0x80000000);
 #endif
-
-	char* cpuBrand = calloc(65, sizeof(char));
-	if (!cpuBrand) return NULL;
 
 	unsigned int nExIds = cpuInfo[0];
 	for (unsigned int i = 0x80000000; i <= nExIds; ++i)
@@ -128,38 +129,68 @@ char* getCpuName()
 		__cpuid((int*)cpuInfo, i);
 #endif
 
-		if (i == 0x80000002) memcpy(cpuBrand, cpuInfo, sizeof(cpuInfo));
-		else if (i == 0x80000003) memcpy(cpuBrand + 16, cpuInfo, sizeof(cpuInfo));
-		else if (i == 0x80000004) memcpy(cpuBrand + 32, cpuInfo, sizeof(cpuInfo));
+		if (i == 0x80000002) memcpy(cpuName, cpuInfo, sizeof(cpuInfo));
+		else if (i == 0x80000003) memcpy(cpuName + 16, cpuInfo, sizeof(cpuInfo));
+		else if (i == 0x80000004) memcpy(cpuName + 32, cpuInfo, sizeof(cpuInfo));
 	}
 #else
-	memcpy(cpuBrand, "Unknown\0", 8);
+
+	memcpy(cpuName, "Unknown\0", 8);
+
+#if __APPLE__
+	size_t brandLength = 64;
+	sysctlbyname("machdep.cpu.brand_string", cpuName, &brandLength, NULL, 0);
+#else
 	FILE* file = fopen("/proc/cpuinfo", "r");
-	if (!file) return cpuBrand;
-
-	char buffer[256];
-	while (fgets(buffer, 256, file))
+	if (file)
 	{
-		if (memcmp(buffer, "model name", 10) != 0 &&
-			memcmp(buffer, "Model", 5) != 0) continue;
-
-		char* pointer = memchr(buffer, ':', 256);
-		if (!pointer) continue;
-
-		size_t index = (pointer - buffer) + 2;
-		if (index >= 256) continue;
-
-		for (size_t i = index; i < 256; i++)
+		char buffer[256];
+		while (fgets(buffer, 256, file))
 		{
-			char value = buffer[i];
-			if (value != '\n' && value != '\0') continue;
-			size_t count = i - index;
-			if (i > 64) return cpuBrand;
-			memcpy(cpuBrand, buffer + index, count);
-			cpuBrand[count] = '\0';
+			if (memcmp(buffer, "model name", 10) != 0 &&
+				memcmp(buffer, "Model", 5) != 0) continue;
+
+			char* pointer = memchr(buffer, ':', 256);
+			if (!pointer) continue;
+
+			size_t index = (pointer - buffer) + 2;
+			if (index >= 256) continue;
+
+			for (size_t i = index; i < 256; i++)
+			{
+				char value = buffer[i];
+				if (value != '\n' && value != '\0') continue;
+				size_t count = i - index;
+				if (i > 64) return cpuName;
+				memcpy(cpuName, buffer + index, count);
+				cpuName[count] = '\0';
+				break;
+			}
+		}
+
+		fclose(file);
+	}
+#endif
+	
+#endif
+
+	size_t nameLength = strlen(cpuName);
+	for (int64_t i = nameLength - 1; i > 0; i--)
+	{
+		if (cpuName[i] != ' ')
+		{
+			nameLength = i + 1;
 			break;
 		}
 	}
-#endif
-	return cpuBrand;
+	cpuName[nameLength] = '\0';
+
+	char* newCpuName = realloc(cpuName, nameLength + 1);
+	if (!newCpuName)
+	{
+		free(cpuName);
+		return NULL;
+	}
+
+	return newCpuName;
 }
