@@ -48,7 +48,7 @@ public:
 	}
 
 	/**
-	 * @brief Returns running system logical CPU count. (MT-Safe)
+	 * @brief Returns system logical CPU count. (MT-Safe)
 	 * @details See the @ref getCpuCount().
 	 */
 	static int getCpuCount() noexcept
@@ -57,16 +57,27 @@ public:
 	}
 
 	/**
-	 * @brief Returns running system total RAM size. (MT-Safe)
-	 * @details See the @ref getRamSize().
+	 * @brief Returns system total physical RAM size. (MT-Safe)
+	 * @details See the @ref getTotalRamSize().
+	 * @return The total RAM size in bytes on success, otherwise -1.
 	 */
-	static int64_t getRamSize() noexcept
+	static int64_t getTotalRamSize() noexcept
 	{
-		return ::getRamSize();
+		return ::getTotalRamSize();
 	}
 
 	/**
-	 * @brief Returns running system CPU name string. (MT-Safe)
+	 * @brief Returns system free physical RAM size. (MT-Safe)
+	 * @details See the @ref getFreeRamSize().
+	 * @return The free RAM size in bytes on success, otherwise -1.
+	 */
+	static int64_t getFreeRamSize() noexcept
+	{
+		return ::getFreeRamSize();
+	}
+
+	/**
+	 * @brief Returns system CPU name string. (MT-Safe)
 	 * @details See the @ref getCpuName().
 	 * @throw runtime_error if failed to get CPU name.
 	 */

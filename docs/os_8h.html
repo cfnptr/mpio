@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">MPIO<span id="projectnumber">&#160;v1.2.1</span>
+   <div id="projectname">MPIO<span id="projectnumber">&#160;v1.3.0</span>
    </div>
   </td>
  </tr>
@@ -69,13 +69,16 @@ Functions</h2></td></tr>
 <tr class="memdesc:aa8dadbf5401d2d80893740fdb87961cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns high resolution time stamp in seconds. (MT-Safe)  <br /></td></tr>
 <tr class="separator:aa8dadbf5401d2d80893740fdb87961cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac7e7eebb4772b4a12fc2b775f6cc9071" id="r_ac7e7eebb4772b4a12fc2b775f6cc9071"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac7e7eebb4772b4a12fc2b775f6cc9071">getCpuCount</a> ()</td></tr>
-<tr class="memdesc:ac7e7eebb4772b4a12fc2b775f6cc9071"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns running system logical CPU count. (MT-Safe)  <br /></td></tr>
+<tr class="memdesc:ac7e7eebb4772b4a12fc2b775f6cc9071"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns system logical CPU count. (MT-Safe)  <br /></td></tr>
 <tr class="separator:ac7e7eebb4772b4a12fc2b775f6cc9071"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af9a61bb6508cb55e8b3b01723bf656f5" id="r_af9a61bb6508cb55e8b3b01723bf656f5"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af9a61bb6508cb55e8b3b01723bf656f5">getRamSize</a> ()</td></tr>
-<tr class="memdesc:af9a61bb6508cb55e8b3b01723bf656f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns running system total RAM size. (MT-Safe)  <br /></td></tr>
-<tr class="separator:af9a61bb6508cb55e8b3b01723bf656f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e09009ef29e2ff41458d9ea0e26a0cc" id="r_a3e09009ef29e2ff41458d9ea0e26a0cc"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3e09009ef29e2ff41458d9ea0e26a0cc">getTotalRamSize</a> ()</td></tr>
+<tr class="memdesc:a3e09009ef29e2ff41458d9ea0e26a0cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns system total physical RAM size. (MT-Safe)  <br /></td></tr>
+<tr class="separator:a3e09009ef29e2ff41458d9ea0e26a0cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7ffb4dde2f51d9b4f8ca4d22c8f6aba" id="r_aa7ffb4dde2f51d9b4f8ca4d22c8f6aba"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa7ffb4dde2f51d9b4f8ca4d22c8f6aba">getFreeRamSize</a> ()</td></tr>
+<tr class="memdesc:aa7ffb4dde2f51d9b4f8ca4d22c8f6aba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns system free physical RAM size. (MT-Safe)  <br /></td></tr>
+<tr class="separator:aa7ffb4dde2f51d9b4f8ca4d22c8f6aba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c51eff74e6dbae939c893f3e7567bfd" id="r_a9c51eff74e6dbae939c893f3e7567bfd"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9c51eff74e6dbae939c893f3e7567bfd">getCpuName</a> ()</td></tr>
-<tr class="memdesc:a9c51eff74e6dbae939c893f3e7567bfd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns running system CPU name string. (MT-Safe)  <br /></td></tr>
+<tr class="memdesc:a9c51eff74e6dbae939c893f3e7567bfd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns system CPU name string. (MT-Safe)  <br /></td></tr>
 <tr class="separator:a9c51eff74e6dbae939c893f3e7567bfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -116,19 +119,19 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns running system logical CPU count. (MT-Safe) </p>
+<p>Returns system logical CPU count. (MT-Safe) </p>
 <p>Usefull for a thread pool thread count. </p>
 
 </div>
 </div>
-<a id="af9a61bb6508cb55e8b3b01723bf656f5" name="af9a61bb6508cb55e8b3b01723bf656f5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af9a61bb6508cb55e8b3b01723bf656f5">&#9670;&#160;</a></span>getRamSize()</h2>
+<a id="a3e09009ef29e2ff41458d9ea0e26a0cc" name="a3e09009ef29e2ff41458d9ea0e26a0cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e09009ef29e2ff41458d9ea0e26a0cc">&#9670;&#160;</a></span>getTotalRamSize()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int64_t getRamSize </td>
+          <td class="memname">int64_t getTotalRamSize </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"></span></td><td>)</td>
           <td></td>
@@ -136,8 +139,28 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns running system total RAM size. (MT-Safe) </p>
-<p>Usefull for a OS information logging. </p>
+<p>Returns system total physical RAM size. (MT-Safe) </p>
+<p>Usefull for an OS information logging. </p><dl class="section return"><dt>Returns</dt><dd>The total RAM size in bytes on success, otherwise -1. </dd></dl>
+
+</div>
+</div>
+<a id="aa7ffb4dde2f51d9b4f8ca4d22c8f6aba" name="aa7ffb4dde2f51d9b4f8ca4d22c8f6aba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa7ffb4dde2f51d9b4f8ca4d22c8f6aba">&#9670;&#160;</a></span>getFreeRamSize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int64_t getFreeRamSize </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns system free physical RAM size. (MT-Safe) </p>
+<p>Usefull for an OS information logging. </p><dl class="section return"><dt>Returns</dt><dd>The free RAM size in bytes on success, otherwise -1. </dd></dl>
 
 </div>
 </div>
@@ -156,8 +179,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns running system CPU name string. (MT-Safe) </p>
-<p>Usefull for a OS information logging. </p><dl class="section note"><dt>Note</dt><dd>You should free() the allocated string manually. </dd></dl>
+<p>Returns system CPU name string. (MT-Safe) </p>
+<p>Usefull for an OS information logging. </p><dl class="section note"><dt>Note</dt><dd>You should free() the allocated string manually. </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>An allocated CPU name string. </dd></dl>
 
 </div>
@@ -168,7 +191,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_50ef7a3c260ecc04b67ae703ebb5de74.html">mpio</a></li><li class="navelem"><a class="el" href="os_8h.html">os.h</a></li>
-    <li class="footer">Generated on Sun Jan 28 2024 for MPIO by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
+    <li class="footer">Generated on Tue Jan 30 2024 for MPIO by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
   </ul>
 </div>
 </body>

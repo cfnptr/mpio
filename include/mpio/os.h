@@ -28,20 +28,28 @@
 double getCurrentClock();
 
 /**
- * @brief Returns running system logical CPU count. (MT-Safe)
+ * @brief Returns system logical CPU count. (MT-Safe)
  * @details Usefull for a thread pool thread count.
  */
 int getCpuCount();
 
 /**
- * @brief Returns running system total RAM size. (MT-Safe)
- * @details Usefull for a OS information logging.
+ * @brief Returns system total physical RAM size. (MT-Safe)
+ * @details Usefull for an OS information logging.
+ * @return The total RAM size in bytes on success, otherwise -1.
  */
-int64_t getRamSize();
+int64_t getTotalRamSize();
 
 /**
- * @brief Returns running system CPU name string. (MT-Safe)
- * @details Usefull for a OS information logging.
+ * @brief Returns system free physical RAM size. (MT-Safe)
+ * @details Usefull for an OS information logging.
+ * @return The free RAM size in bytes on success, otherwise -1.
+ */
+int64_t getFreeRamSize();
+
+/**
+ * @brief Returns system CPU name string. (MT-Safe)
+ * @details Usefull for an OS information logging.
  * @note You should free() the allocated string manually.
  * @return An allocated CPU name string.
  */

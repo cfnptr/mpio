@@ -65,22 +65,43 @@ int getCpuCount()
 #endif
 }
 
-int64_t getRamSize()
+int64_t getTotalRamSize()
 {
 #if __linux__
 	struct sysinfo info;
-	if (sysinfo(&info) != 0) return 0;
-	return info.totalram;
+	if (sysinfo(&info) != 0) return -1;
+	return (int64_t)info.totalram * (int64_t)info.mem_unit;
 #elif __APPLE__
 	int mib [] = { CTL_HW, HW_MEMSIZE };
 	int64_t value = 0;
 	size_t length = sizeof(int64_t);
-	if(sysctl(mib, 2, &value, &length, NULL, 0) != 0) return 0;
+	if(sysctl(mib, 2, &value, &length, NULL, 0) != 0) return -1;
 	return value;
 #elif _WIN32
-	ULONGLONG value = 0;
-	if (GetPhysicallyInstalledSystemMemory(&value) != TRUE) return 0;
-	return value * 1024;
+	MEMORYSTATUSEX statex;
+	statex.dwLength = sizeof(statex);
+	if (GlobalMemoryStatusEx(&statex) == FALSE) return -1;
+	return statex.ullTotalPhys;
+#endif
+}
+
+int64_t getFreeRamSize()
+{
+#if __linux__
+	struct sysinfo info;
+	if (sysinfo(&info) != 0) return -1;
+	return (int64_t)info.freeram * (int64_t)info.mem_unit;
+#elif __APPLE__
+	mach_msg_type_number_t count = HOST_VM_INFO64_COUNT;
+	vm_statistics64_data_t vmstat;
+	if(host_statistics64(mach_host_self(), HOST_VM_INFO64,
+		(host_info64_t)&vmstat, &count) != KERN_SUCCESS) return -1;
+	return (int64_t)vmstats.free_count * (int64_t)getpagesize();
+#elif _WIN32
+	MEMORYSTATUSEX statex;
+	statex.dwLength = sizeof(statex);
+	if (GlobalMemoryStatusEx(&statex) == FALSE) return -1;
+	return statex.ullAvailPhys;
 #endif
 }
 

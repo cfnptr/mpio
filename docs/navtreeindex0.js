@@ -49,10 +49,11 @@ var NAVTREEINDEX0 =
 "md__b_u_i_l_d_i_n_g.html#visual-studio-code-vs-code":[5,4,1],
 "md__b_u_i_l_d_i_n_g.html#windows-1011":[5,1],
 "os_8h.html":[7,0,0,0,2],
-"os_8h.html#a9c51eff74e6dbae939c893f3e7567bfd":[7,0,0,0,2,3],
+"os_8h.html#a3e09009ef29e2ff41458d9ea0e26a0cc":[7,0,0,0,2,2],
+"os_8h.html#a9c51eff74e6dbae939c893f3e7567bfd":[7,0,0,0,2,4],
+"os_8h.html#aa7ffb4dde2f51d9b4f8ca4d22c8f6aba":[7,0,0,0,2,3],
 "os_8h.html#aa8dadbf5401d2d80893740fdb87961cf":[7,0,0,0,2,0],
 "os_8h.html#ac7e7eebb4772b4a12fc2b775f6cc9071":[7,0,0,0,2,1],
-"os_8h.html#af9a61bb6508cb55e8b3b01723bf656f5":[7,0,0,0,2,2],
 "os_8hpp.html":[7,0,1,0,0,1],
 "pages.html":[]
 };

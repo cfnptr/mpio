@@ -30,6 +30,7 @@ set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
 
 option(MPIO_BUILD_SHARED "Build MPIO shared library" ON)
+option(MPIO_BUILD_TESTS "Build MPIO library tests" ON)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 	enable_language(OBJC)
@@ -62,4 +63,16 @@ if(MPIO_BUILD_SHARED)
 		target_link_libraries(mpio-shared PUBLIC
 			"-framework Foundation -framework CoreFoundation")
 	endif()
+endif()
+
+if(MPIO_BUILD_TESTS)
+	enable_testing()
+
+	add_executable(TestMpioDirectory tests/test_directory.c)
+	target_link_libraries(TestMpioDirectory PUBLIC mpio-static)
+	add_test(NAME TestMpioDirectory COMMAND TestMpioDirectory)
+
+	add_executable(TestMpioOS tests/test_os.c)
+	target_link_libraries(TestMpioOS PUBLIC mpio-static)
+	add_test(NAME TestMpioOS COMMAND TestMpioOS)
 endif()

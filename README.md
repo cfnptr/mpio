@@ -33,6 +33,7 @@ Use building [instructions](BUILDING.md) to install all required tools and libra
 | Name              | Description               | Default value |
 |-------------------|---------------------------|---------------|
 | MPIO_BUILD_SHARED | Build MPIO shared library | `ON`          |
+| MPIO_BUILD_TESTS  | Build MPIO library tests  | `ON`          |
 
 ## Cloning
 
