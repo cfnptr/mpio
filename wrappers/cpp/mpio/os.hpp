@@ -84,7 +84,8 @@ public:
 	static string getCpuName()
 	{
 		auto cpuName = ::getCpuName();
-		if (!cpuName) throw runtime_error("Failed to get CPU name.");
+		if (!cpuName)
+			throw runtime_error("Failed to get CPU name.");
 		auto cpuString = string(cpuName);
 		free(cpuName);
 		return cpuString;

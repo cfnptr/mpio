@@ -70,18 +70,21 @@ int64_t getTotalRamSize()
 {
 #if __linux__
 	struct sysinfo info;
-	if (sysinfo(&info) != 0) return -1;
+	if (sysinfo(&info) != 0)
+		return -1;
 	return (int64_t)info.totalram * (int64_t)info.mem_unit;
 #elif __APPLE__
 	int mib [] = { CTL_HW, HW_MEMSIZE };
 	int64_t value = 0;
 	size_t length = sizeof(int64_t);
-	if(sysctl(mib, 2, &value, &length, NULL, 0) != 0) return -1;
+	if (sysctl(mib, 2, &value, &length, NULL, 0) != 0)
+		return -1;
 	return value;
 #elif _WIN32
 	MEMORYSTATUSEX statex;
 	statex.dwLength = sizeof(statex);
-	if (GlobalMemoryStatusEx(&statex) == FALSE) return -1;
+	if (GlobalMemoryStatusEx(&statex) == FALSE)
+		return -1;
 	return statex.ullTotalPhys;
 #endif
 }
@@ -90,18 +93,23 @@ int64_t getFreeRamSize()
 {
 #if __linux__
 	struct sysinfo info;
-	if (sysinfo(&info) != 0) return -1;
+	if (sysinfo(&info) != 0)
+		return -1;
 	return (int64_t)info.freeram * (int64_t)info.mem_unit;
 #elif __APPLE__
 	mach_msg_type_number_t count = HOST_VM_INFO64_COUNT;
 	vm_statistics64_data_t vmstat;
-	if(host_statistics64(mach_host_self(), HOST_VM_INFO64,
-		(host_info64_t)&vmstat, &count) != KERN_SUCCESS) return -1;
+	if (host_statistics64(mach_host_self(), HOST_VM_INFO64,
+		(host_info64_t)&vmstat, &count) != KERN_SUCCESS)
+	{
+		return -1;
+	}
 	return (vmstat.inactive_count + vmstat.free_count) * (int64_t)getpagesize() / (1024 * 1024 * 1024);
 #elif _WIN32
 	MEMORYSTATUSEX statex;
 	statex.dwLength = sizeof(statex);
-	if (GlobalMemoryStatusEx(&statex) == FALSE) return -1;
+	if (GlobalMemoryStatusEx(&statex) == FALSE)
+		return -1;
 	return statex.ullAvailPhys;
 #endif
 }
@@ -109,7 +117,8 @@ int64_t getFreeRamSize()
 char* getCpuName()
 {
 	char* cpuName = calloc(65, sizeof(char));
-	if (!cpuName) return NULL;
+	if (!cpuName)
+		return NULL;
 
 #if __x86_64__ || _M_X64 || __i386__
 	unsigned int cpuInfo[4] = { 0, 0, 0, };
@@ -129,9 +138,12 @@ char* getCpuName()
 		__cpuid((int*)cpuInfo, i);
 #endif
 
-		if (i == 0x80000002) memcpy(cpuName, cpuInfo, sizeof(cpuInfo));
-		else if (i == 0x80000003) memcpy(cpuName + 16, cpuInfo, sizeof(cpuInfo));
-		else if (i == 0x80000004) memcpy(cpuName + 32, cpuInfo, sizeof(cpuInfo));
+		if (i == 0x80000002)
+			memcpy(cpuName, cpuInfo, sizeof(cpuInfo));
+		else if (i == 0x80000003)
+			memcpy(cpuName + 16, cpuInfo, sizeof(cpuInfo));
+		else if (i == 0x80000004)
+			memcpy(cpuName + 32, cpuInfo, sizeof(cpuInfo));
 	}
 #else
 
@@ -148,20 +160,27 @@ char* getCpuName()
 		while (fgets(buffer, 256, file))
 		{
 			if (memcmp(buffer, "model name", 10) != 0 &&
-				memcmp(buffer, "Model", 5) != 0) continue;
+				memcmp(buffer, "Model", 5) != 0)
+			{
+				continue;
+			}
 
 			char* pointer = memchr(buffer, ':', 256);
-			if (!pointer) continue;
+			if (!pointer)
+				continue;
 
 			size_t index = (pointer - buffer) + 2;
-			if (index >= 256) continue;
+			if (index >= 256)
+				continue;
 
 			for (size_t i = index; i < 256; i++)
 			{
 				char value = buffer[i];
-				if (value != '\n' && value != '\0') continue;
+				if (value != '\n' && value != '\0')
+					continue;
 				size_t count = i - index;
-				if (i > 64) return cpuName;
+				if (i > 64)
+					return cpuName;
 				memcpy(cpuName, buffer + index, count);
 				cpuName[count] = '\0';
 				break;

@@ -23,13 +23,18 @@ char* getDataDirectory(bool isShared)
 	NSArray<NSString*>* array = NSSearchPathForDirectoriesInDomains(
 		NSApplicationSupportDirectory,
 		isShared ? NSLocalDomainMask : NSUserDomainMask, YES);
-	if (!array) return NULL;
+	if (!array)
+		return NULL;
 
 	NSString* string = [array lastObject];
-	if (!string) return NULL;
+	if (!string)
+		return NULL;
+
 	size_t length = [string length];
 	char* path = malloc(length + 1);
-	if (!path) return NULL;
+	if (!path)
+		return NULL;
+
 	memcpy(path, [string UTF8String], length + 1);
 	return path;
 }
@@ -37,12 +42,17 @@ char* getAppDataDirectory(const char* appName, bool isShared)
 {
 	assert(appName != NULL);
 	char* dataPath = getDataDirectory(isShared);
-	if (!dataPath) return NULL;
+	if (!dataPath)
+		return NULL;
 
 	size_t dataPathLength = strlen(dataPath);
 	size_t appNameLength = strlen(appName);
 	char* path = realloc(dataPath, dataPathLength + appNameLength + 2);
-	if (!path) { free(dataPath); return NULL; }
+	if (!path)
+	{
+		free(dataPath);
+		return NULL;
+	}
 
 	path[dataPathLength] = '/';
 	memcpy(path + dataPathLength + 1, appName, appNameLength + 1);
@@ -51,10 +61,12 @@ char* getAppDataDirectory(const char* appName, bool isShared)
 char* getResourcesDirectory()
 {
 	CFBundleRef bundle = CFBundleGetMainBundle();
-	if (!bundle) return NULL;
+	if (!bundle)
+		return NULL;
 
 	char* string = malloc(MAXPATHLEN + 1);
-	if (!string) return NULL;
+	if (!string)
+		return NULL;
 
 	CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(bundle);
 	if (!CFURLGetFileSystemRepresentation(resourcesURL,
@@ -67,6 +79,7 @@ char* getResourcesDirectory()
 	CFRelease(resourcesURL);
 	size_t length = strlen(string);
 	char* path = realloc(string, length + 1);
-	if (!path) return string;
+	if (!path)
+		return string;
 	return path;
 }

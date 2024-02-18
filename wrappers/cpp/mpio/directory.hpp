@@ -50,7 +50,8 @@ public:
 	static filesystem::path getDataPath(bool isShared = false)
 	{
 		auto dataPath = getDataDirectory(isShared);
-		if (!dataPath) throw runtime_error("Failed to get data directory.");
+		if (!dataPath)
+			throw runtime_error("Failed to get data directory.");
 		auto path = filesystem::path(dataPath);
 		free(dataPath);
 		return path;
@@ -68,7 +69,8 @@ public:
 	static filesystem::path getAppDataPath(const string& appName, bool isShared = false)
 	{
 		auto dataPath = getAppDataDirectory(appName.c_str(), isShared);
-		if (!dataPath) throw runtime_error("Failed to get app data directory.");
+		if (!dataPath)
+			throw runtime_error("Failed to get app data directory.");
 		auto path = filesystem::path(dataPath);
 		free(dataPath);
 		return path;
@@ -84,7 +86,8 @@ public:
 	static filesystem::path getResourcesPath()
 	{
 		auto dataPath = getResourcesDirectory();
-		if (!dataPath) throw runtime_error("Failed to get resources directory.");
+		if (!dataPath)
+			throw runtime_error("Failed to get resources directory.");
 		auto path = filesystem::path(dataPath);
 		free(dataPath);
 		return path;

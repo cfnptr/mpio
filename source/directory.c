@@ -39,10 +39,12 @@ bool isDirectoryExists(const char* path)
 char* getDataDirectory(bool isShared)
 {
 	char* homePath = getenv("HOME");
-	if (!homePath) homePath = "~";
+	if (!homePath)
+		homePath = "~";
 	size_t length = strlen(homePath);
 	char* path = malloc(length + 1);
-	if (!path) return NULL;
+	if (!path)
+		return NULL;
 	memcpy(path, homePath, length + 1);
 	return path;
 }
@@ -50,12 +52,17 @@ char* getAppDataDirectory(const char* appName, bool isShared)
 {
 	assert(appName != NULL);
 	char* dataPath = getDataDirectory(isShared);
-	if (!dataPath) return NULL;
+	if (!dataPath)
+		return NULL;
 
 	size_t dataPathLength = strlen(dataPath);
 	size_t appNameLength = strlen(appName);
 	char* path = realloc(dataPath, dataPathLength + appNameLength + 3);
-	if (!path) { free(dataPath); return NULL; }
+	if (!path)
+	{
+		free(dataPath);
+		return NULL;
+	}
 
 	path[dataPathLength] = '/';
 	path[dataPathLength + 1] = '.';
@@ -67,7 +74,8 @@ char* getResourcesDirectory()
 	const char* resourcesPath = "resources"; // TODO: support flatpak/snap.
 	size_t resourcesPathLength = strlen(resourcesPath);
 	char* path = malloc(resourcesPathLength + 1);
-	if (!path) return NULL;
+	if (!path)
+		return NULL;
 	memcpy(path, resourcesPath, resourcesPathLength + 1);
 	return path; 
 }
@@ -99,20 +107,36 @@ char* getDataDirectory(bool isShared)
 	HRESULT result = SHGetKnownFolderPath(
 		isShared ? &FOLDERID_ProgramData : &FOLDERID_RoamingAppData,
 		0, NULL, &wideDataPath);
-	if (FAILED(result)) { CoTaskMemFree(wideDataPath); return NULL; }
+	if (FAILED(result))
+	{
+		CoTaskMemFree(wideDataPath);
+		return NULL;
+	}
 
 	size_t length = 0;
 	size_t wideLength = wcslen(wideDataPath);
 	size_t byteSize = wideLength * 4 + 1;
 	char* dataPath = malloc(byteSize);
-	if (!dataPath) { CoTaskMemFree(wideDataPath); return NULL; }
+	if (!dataPath)
+	{
+		CoTaskMemFree(wideDataPath);
+		return NULL;
+	}
 
 	errno_t error = wcstombs_s(&length, dataPath, byteSize, wideDataPath, wideLength * 4);
 	CoTaskMemFree(wideDataPath);
-	if (error != 0) { free(dataPath); return NULL; }
+	if (error != 0)
+	{
+		free(dataPath);
+		return NULL;
+	}
 
 	char* path = realloc(dataPath, length + 1);
-	if (!path) { free(dataPath); return NULL; }
+	if (!path)
+	{
+		free(dataPath);
+		return NULL;
+	}
 
 	path[length] = '\0';
 	return path;
@@ -121,12 +145,17 @@ char* getAppDataDirectory(const char* appName, bool isShared)
 {
 	assert(appName != NULL);
 	char* dataPath = getDataDirectory(isShared);
-	if (!dataPath) return NULL;
+	if (!dataPath)
+		return NULL;
 
 	size_t dataPathLength = strlen(dataPath);
 	size_t appNameLength = strlen(appName);
 	char* path = realloc(dataPath, dataPathLength + appNameLength + 2);
-	if (!path) { free(dataPath); return NULL; }
+	if (!path)
+	{
+		free(dataPath);
+		return NULL;
+	}
 
 	path[dataPathLength] = '\\';
 	memcpy(path + dataPathLength + 1, appName, appNameLength + 1);
@@ -137,7 +166,8 @@ char* getResourcesDirectory()
 	const char* resourcesPath = "resources"; // TODO: support .exe packed resources
 	size_t resourcesPathLength = strlen(resourcesPath);
 	char* path = malloc(resourcesPathLength + 1);
-	if (!path) return NULL;
+	if (!path)
+		return NULL;
 	memcpy(path, resourcesPath, resourcesPathLength + 1);
 	return path; 
 }

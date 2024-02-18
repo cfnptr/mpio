@@ -94,7 +94,8 @@ inline static FILE* openFile(const char* filePath, const char* mode)
 {
 	FILE* file;
 	errno_t error = fopen_s(&file, filePath, mode);
-	if (error != 0) return NULL;
+	if (error != 0)
+		return NULL;
 	return file;
 }
 
