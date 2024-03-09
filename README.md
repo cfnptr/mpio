@@ -35,6 +35,13 @@ Use building [instructions](BUILDING.md) to install all required tools and libra
 | MPIO_BUILD_SHARED | Build MPIO shared library | `ON`          |
 | MPIO_BUILD_TESTS  | Build MPIO library tests  | `ON`          |
 
+### CMake targets
+
+| Name        | Description          | Windows | macOS    | Linux |
+|-------------|----------------------|---------|----------|-------|
+| mpio-static | Static MPIO library  | `.lib`  | `.a`     | `.a`  |
+| mpio-shared | Dynamic MPIO library | `.dll`  | `.dylib` | `.so` |
+
 ## Cloning
 
 ```
