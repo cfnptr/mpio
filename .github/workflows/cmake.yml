@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 env:
   BUILD_TYPE: Release
-  ARCHIVE_NAME: ${{github.event.repository.name}}-${{github.event.release.tag_name}}-${{runner.os}-${{runner.arch}.zip
+  ARCHIVE_NAME: ${{github.event.repository.name}}-${{github.event.release.tag_name}}-${{runner.os}}-${{runner.arch}}.zip
 
 jobs:
   build:
