@@ -14,7 +14,8 @@ jobs:
     steps:
     - name: Set archive environment variable
       if: startsWith(github.ref, 'refs/tags/')
-      run: echo "ARCHIVE_NAME=${{github.event.repository.name}}-${{github.event.release.tag_name}}-${{runner.os}}-${{runner.arch}}.zip" >> "$GITHUB_ENV"
+      shell: bash
+      run: echo "ARCHIVE_NAME=${{github.event.repository.name}}-${{github.ref_name}}-${{runner.os}}-${{runner.arch}}.zip" >> "$GITHUB_ENV"
 
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -46,9 +47,9 @@ jobs:
       run: 7z a -mx9 $ARCHIVE_NAME ./build/*
 
     - name: Release artifacts
-      uses: softprops/action-gh-release@v2
       if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v2
       with:
           generate_release_notes: true
-          files: ${{runner.workspace}}/$ARCHIVE_NAME
+          files: $ARCHIVE_NAME
 
