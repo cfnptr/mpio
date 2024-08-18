@@ -4,11 +4,12 @@ on: [push, pull_request]
 
 env:
   BUILD_TYPE: Release
-  ARCHIVE_NAME: ${{github.event.repository.name}}-${{github.event.release.tag_name}}-${{runner.os}}-${{runner.arch}}.zip
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{matrix.os}}
+    env:
+      ARCHIVE_NAME: ${{github.event.repository.name}}-${{github.event.release.tag_name}}-${{runner.os}}-${{runner.arch}}.zip
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
