@@ -21,7 +21,7 @@ jobs:
       with:
         submodules: true
 
-    - name: Create Build Environment
+    - name: Create build environment
       run: cmake -E make_directory ${{runner.workspace}}/build
 
     - name: Configure CMake
@@ -29,23 +29,23 @@ jobs:
       working-directory: ${{runner.workspace}}/build
       run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
 
-    - name: Build
+    - name: Build project
       working-directory: ${{runner.workspace}}/build
       shell: bash
       run: cmake --build . --config $BUILD_TYPE --parallel
 
-    - name: Test
+    - name: Run tests
       working-directory: ${{runner.workspace}}/build
       shell: bash
       run: ctest -C $BUILD_TYPE
 
-    - name: Archive
+    - name: Archive artifacts
       if: startsWith(github.ref, 'refs/tags/')
       working-directory: ${{runner.workspace}}
       shell: bash
       run: 7z a -mx9 $ARCHIVE_NAME ./build/*
 
-    - name: Release
+    - name: Release artifacts
       uses: softprops/action-gh-release@v2
       if: startsWith(github.ref, 'refs/tags/')
       with:
