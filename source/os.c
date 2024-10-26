@@ -13,8 +13,6 @@
 // limitations under the License.
 
 #include "mpio/os.h"
-#include <stdlib.h>
-#include <string.h>
 
 #if __linux__ || __APPLE__
 #include <time.h>
@@ -30,14 +28,19 @@
 #endif
 
 #if __linux__
+#include <stdio.h>
 #include <sys/sysinfo.h>
 #elif __APPLE__
 #include <sys/sysctl.h>
 #include <mach/mach_host.h>
 #endif
 
-#if !__x86_64__ && !_M_X64 && !__i386__
-#include <stdio.h>
+#if __x86_64__ || _M_X64 || __i386__
+#if __linux__ || __APPLE__
+#define CPUID(id, cpuInfo) __cpuid(id, cpuInfo[0], cpuInfo[1], cpuInfo[2], cpuInfo[3])
+#elif _WIN32
+#define CPUID(id, cpuInfo) __cpuid((int*)cpuInfo, id)
+#endif
 #endif
 
 double getCurrentClock()
@@ -48,22 +51,220 @@ double getCurrentClock()
 	return (double)time.tv_sec + (double)time.tv_nsec / 1000000000.0;
 #elif _WIN32
 	LARGE_INTEGER frequency;
-	if (QueryPerformanceFrequency(&frequency) != TRUE) abort();
+	if (QueryPerformanceFrequency(&frequency) != TRUE)
+		abort();
 	LARGE_INTEGER counter;
-	if (QueryPerformanceCounter(&counter) != TRUE) abort();
+	if (QueryPerformanceCounter(&counter) != TRUE)
+		abort();
 	return (double)counter.QuadPart / (double)frequency.QuadPart;
 #endif
 }
 
-int getCpuCount()
+int getLogicalCpuCount()
 {
-#if __linux__ || __APPLE__
-	return (int)sysconf(_SC_NPROCESSORS_ONLN);
+	int cpuCount = -1;
+#if __linux__
+	cpuCount = (int)sysconf(_SC_NPROCESSORS_ONLN);
+
+	if (cpuCount <= 0)
+	{
+		FILE* file = fopen("/proc/cpuinfo", "r");
+		if (file)
+		{
+			char* buffer = malloc(256);
+			if (!buffer)
+			{
+				fclose(file);
+				return -1;
+			}
+
+			while (fgets(buffer, 256, file))
+			{
+				if (memcmp(buffer, "processor", 9) != 0)
+					continue;
+
+				char* pointer = memchr(buffer, ':', 256);
+				if (!pointer)
+					continue;
+
+				int count = atoi(pointer + 1) + 1;
+				if (count > cpuCount)
+					cpuCount = count;
+			}
+
+			fclose(file);
+		}
+	}
+#elif __APPLE__
+	size_t size = sizeof(cpuCount);
+	sysctlbyname("hw.logicalcpu", &cpuCount, &size, NULL, 0);
+
+	if (cpuCount <= 0)
+	{
+		size = sizeof(cpuCount);
+		sysctlbyname("machdep.cpu.thread_count", &cpuCount, &size, NULL, 0);
+	}
+	if (cpuCount <= 0)
+	{
+		size = sizeof(cpuCount);
+		sysctlbyname("hw.activecpu", &cpuCount, &size, NULL, 0);
+	}
 #elif _WIN32
 	SYSTEM_INFO systemInfo;
 	GetSystemInfo(&systemInfo);
-	return (int)systemInfo.dwNumberOfProcessors;
+	cpuCount = (int)systemInfo.dwNumberOfProcessors;
 #endif
+	return cpuCount;
+}
+
+int getPhysicalCpuCount()
+{
+	int cpuCount = -1;
+#if __linux__
+	FILE* file = fopen("/proc/cpuinfo", "r");
+	if (file)
+	{
+		char* buffer = malloc(256);
+		if (!buffer)
+		{
+			fclose(file);
+			return -1;
+		}
+		
+		int processorCount = -1;
+		while (fgets(buffer, 256, file))
+		{
+			if (memcmp(buffer, "cpu cores", 9) == 0)
+			{
+				char* pointer = memchr(buffer, ':', 256);
+				if (!pointer)
+					continue;
+
+				cpuCount = atoi(pointer + 1);
+				free(buffer);
+				fclose(file);
+				return cpuCount;
+			}
+			if (memcmp(buffer, "processor", 9) == 0)
+			{
+				char* pointer = memchr(buffer, ':', 256);
+				if (!pointer)
+					continue;
+
+				int count = atoi(pointer + 1) + 1;
+				if (count > processorCount)
+					processorCount = count;
+			}
+
+			if (memcmp(buffer, "core id", 7) != 0)
+				continue;
+
+			char* pointer = memchr(buffer, ':', 256);
+			if (!pointer)
+				continue;
+
+			int count = atoi(pointer + 1) + 1;
+			if (count > cpuCount)
+				cpuCount = count;
+		}
+
+		fclose(file);
+	}
+
+	if (cpuCount <= 0)
+		cpuCount = processorCount;
+#elif __APPLE__
+	size_t size = sizeof(cpuCount);
+	sysctlbyname("hw.physicalcpu", &cpuCount, &size, NULL, 0);
+
+	if (cpuCount <= 0)
+	{
+		size = sizeof(cpuCount);
+		sysctlbyname("machdep.cpu.core_count", &cpuCount, &size, NULL, 0);
+	}
+#elif _WIN32
+	DWORD infoSize = 0;
+	GetLogicalProcessorInformationEx(RelationProcessorCore, NULL, &infoSize);
+	if (GetLastError() != ERROR_INSUFFICIENT_BUFFER)
+		return -1;
+
+	char* infoBuffer = malloc(infoSize);
+	if (!infoBuffer)
+		return -1;
+
+	PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX info = 
+		(PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX)infoBuffer;
+	if (GetLogicalProcessorInformationEx(
+		RelationProcessorCore, info, &infoSize) != TRUE)
+	{
+		free(infoBuffer);
+		return -1;
+	}
+
+	cpuCount = 0;
+	size_t offset = 0;
+
+	do
+	{
+		const PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX currentInfo =
+			(const PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX)(infoBuffer + offset);
+		offset += currentInfo->Size;
+		cpuCount++;
+	}
+	while (offset < infoSize);
+
+	free(infoBuffer);
+#endif
+	return cpuCount;
+}
+
+int getPerformanceCpuCount()
+{
+	int cpuCount = -1;
+#if __linux__
+	// TODO: use /sys/devices/system/cpu/cpu0/cpu_capacity
+#elif _WIN32
+	DWORD infoSize = 0;
+	GetLogicalProcessorInformationEx(RelationProcessorCore, NULL, &infoSize);
+	if (GetLastError() != ERROR_INSUFFICIENT_BUFFER)
+		return -1;
+
+	char* infoBuffer = malloc(infoSize);
+	if (!infoBuffer)
+		return -1;
+
+	PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX info =
+		(PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX)infoBuffer;
+	if (GetLogicalProcessorInformationEx(
+		RelationProcessorCore, info, &infoSize) != TRUE)
+	{
+		free(infoBuffer);
+		return -1;
+	}
+
+	cpuCount = 0;
+	size_t offset = 0;
+
+	do
+	{
+		const PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX currentInfo =
+			(const PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX)(infoBuffer + offset);
+		if (currentInfo->Relationship == RelationProcessorCore)
+		{
+			if (currentInfo->Processor.EfficiencyClass > 0)
+				cpuCount++;
+		}
+		offset += currentInfo->Size;
+	} while (offset < infoSize);
+
+	free(infoBuffer);
+#elif __APPLE__
+	size_t size = sizeof(cpuCount);
+	sysctlbyname("hw.perflevel0.physicalcpu", &cpuCount, &size, NULL, 0);
+#endif
+	if(cpuCount <= 0)
+		cpuCount = getPhysicalCpuCount();
+	return cpuCount;
 }
 
 int64_t getTotalRamSize()
@@ -104,7 +305,8 @@ int64_t getFreeRamSize()
 	{
 		return -1;
 	}
-	return (vmstat.inactive_count + vmstat.free_count) * (int64_t)getpagesize() / (1024 * 1024 * 1024);
+	return (vmstat.inactive_count + vmstat.free_count) * 
+		(int64_t)getpagesize() / (1024 * 1024 * 1024);
 #elif _WIN32
 	MEMORYSTATUSEX statex;
 	statex.dwLength = sizeof(statex);
@@ -121,23 +323,13 @@ char* getCpuName()
 		return NULL;
 
 #if __x86_64__ || _M_X64 || __i386__
-	unsigned int cpuInfo[4] = { 0, 0, 0, };
-
-#if __linux__ || __APPLE__
-	__cpuid(0x80000000, cpuInfo[0], cpuInfo[1], cpuInfo[2], cpuInfo[3]);
-#elif _WIN32
-	__cpuid((int*)cpuInfo, 0x80000000);
-#endif
+	unsigned int cpuInfo[4] = { 0, 0, 0, 0 };
+	CPUID(0x80000000, cpuInfo);
 
 	unsigned int nExIds = cpuInfo[0];
 	for (unsigned int i = 0x80000000; i <= nExIds; ++i)
 	{
-#if __linux__ || __APPLE__
-		__cpuid(i, cpuInfo[0], cpuInfo[1], cpuInfo[2], cpuInfo[3]);
-#elif _WIN32
-		__cpuid((int*)cpuInfo, i);
-#endif
-
+		CPUID(i, cpuInfo);
 		if (i == 0x80000002)
 			memcpy(cpuName, cpuInfo, sizeof(cpuInfo));
 		else if (i == 0x80000003)
@@ -149,14 +341,20 @@ char* getCpuName()
 
 	memcpy(cpuName, "Unknown\0", 8);
 
-#if __APPLE__
+	#if __APPLE__
 	size_t brandLength = 64;
 	sysctlbyname("machdep.cpu.brand_string", cpuName, &brandLength, NULL, 0);
-#else
+	#else
 	FILE* file = fopen("/proc/cpuinfo", "r");
 	if (file)
 	{
-		char buffer[256];
+		char* buffer = malloc(256);
+		if (!buffer)
+		{
+			fclose(file);
+			return cpuName;
+		}
+
 		while (fgets(buffer, 256, file))
 		{
 			if (memcmp(buffer, "model name", 10) != 0 &&
@@ -178,19 +376,25 @@ char* getCpuName()
 				char value = buffer[i];
 				if (value != '\n' && value != '\0')
 					continue;
+
 				size_t count = i - index;
 				if (i > 64)
+				{
+					free(buffer);
+					fclose(file);
 					return cpuName;
+				}
+
 				memcpy(cpuName, buffer + index, count);
 				cpuName[count] = '\0';
 				break;
 			}
 		}
 
+		free(buffer);
 		fclose(file);
 	}
-#endif
-	
+	#endif
 #endif
 
 	size_t nameLength = strlen(cpuName);

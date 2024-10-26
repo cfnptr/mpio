@@ -34,9 +34,9 @@ inline static bool testGetCurrentClock()
 
 	return true;
 }
-inline static bool testGetCpuCount()
+inline static bool testGetLogicalCpuCount()
 {
-	int cpuCount = getCpuCount();
+	int cpuCount = getLogicalCpuCount();
 	if (cpuCount <= 0)
 	{
 		printf("Invalid logical CPU count.\n");
@@ -44,6 +44,30 @@ inline static bool testGetCpuCount()
 	}
 
 	printf("Logical CPU count: %d\n", cpuCount);
+	return true;
+}
+inline static bool testGetPhysicalCpuCount()
+{
+	int cpuCount = getPhysicalCpuCount();
+	if (cpuCount <= 0)
+	{
+		printf("Invalid physical CPU count.\n");
+		return false;
+	}
+
+	printf("Physical CPU count: %d\n", cpuCount);
+	return true;
+}
+inline static bool testGetPerformanceCpuCount()
+{
+	int cpuCount = getPerformanceCpuCount();
+	if (cpuCount <= 0)
+	{
+		printf("Invalid performance CPU count.\n");
+		return false;
+	}
+
+	printf("Performance CPU count: %d\n", cpuCount);
 	return true;
 }
 inline static bool testGetTotalRamSize()
@@ -92,7 +116,9 @@ inline static bool testGetCpuName()
 int main()
 {
 	bool result = testGetCurrentClock();
-	result |= testGetCpuCount();
+	result |= testGetLogicalCpuCount();
+	result |= testGetPhysicalCpuCount();
+	result |= testGetPerformanceCpuCount();
 	result |= testGetTotalRamSize();
 	result |= testGetFreeRamSize();
 	result |= testGetCpuName();

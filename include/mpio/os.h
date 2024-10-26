@@ -29,9 +29,27 @@ double getCurrentClock();
 
 /**
  * @brief Returns system logical CPU count. (MT-Safe)
- * @details Usefull for a thread pool thread count.
+ * @details Usefull for a background thread pool thread count.
  */
-int getCpuCount();
+int getLogicalCpuCount();
+
+/**
+ * @brief Returns system physical CPU count. (MT-Safe)
+ * @details Usefull for a foreground thread pool thread count.
+ */
+int getPhysicalCpuCount();
+
+/**
+ * @brief Returns system physical CPU count. (MT-Safe)
+ * @details Usefull for a foreground thread pool thread count.
+ */
+int getPhysicalCpuCount();
+
+/**
+ * @brief Returns system performance CPU count. (MT-Safe)
+ * @details Usefull for a foreground thread pool thread count.
+ */
+int getPerformanceCpuCount();
 
 /**
  * @brief Returns system total physical RAM size. (MT-Safe)

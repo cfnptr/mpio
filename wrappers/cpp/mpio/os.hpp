@@ -42,38 +42,74 @@ public:
 	 * @brief Returns high resolution time stamp in seconds. (MT-Safe)
 	 * @details See the @ref getCurrentClock().
 	 */
-	static double getCurrentClock() noexcept
+	static double getCurrentClock()
 	{
 		return ::getCurrentClock();
 	}
 
 	/**
 	 * @brief Returns system logical CPU count. (MT-Safe)
-	 * @details See the @ref getCpuCount().
+	 * @details See the @ref getLogicalCpuCount().
+	 * @throw runtime_error if failed to get logical CPU count.
 	 */
-	static int getCpuCount() noexcept
+	static int getLogicalCpuCount()
 	{
-		return ::getCpuCount();
+		auto cpuCount = ::getLogicalCpuCount();
+		if (cpuCount <= 0)
+			throw runtime_error("Failed to get logical CPU count.");
+		return cpuCount;
+	}
+
+	/**
+	 * @brief Returns system physical CPU count. (MT-Safe)
+	 * @details See the @ref getPhysicalCpuCount().
+	 * @throw runtime_error if failed to get physical CPU count.
+	 */
+	static int getPhysicalCpuCount()
+	{
+		auto cpuCount = ::getPhysicalCpuCount();
+		if (cpuCount <= 0)
+			throw runtime_error("Failed to get physical CPU count.");
+		return cpuCount;
+	}
+
+	/**
+	 * @brief Returns system performance CPU count. (MT-Safe)
+	 * @details See the @ref getPerformanceCpuCount().
+	 * @throw runtime_error if failed to get performance CPU count.
+	 */
+	static int getPerformanceCpuCount()
+	{
+		auto cpuCount = ::getPerformanceCpuCount();
+		if (cpuCount <= 0)
+			throw runtime_error("Failed to get performance CPU count.");
+		return cpuCount;
 	}
 
 	/**
 	 * @brief Returns system total physical RAM size. (MT-Safe)
 	 * @details See the @ref getTotalRamSize().
-	 * @return The total RAM size in bytes on success, otherwise -1.
+	 * @throw runtime_error if failed to get total RAM size.
 	 */
-	static int64_t getTotalRamSize() noexcept
+	static int64_t getTotalRamSize()
 	{
-		return ::getTotalRamSize();
+		auto ramSize = ::getTotalRamSize();
+		if (ramSize <= 0)
+			throw runtime_error("Failed to get total RAM size.");
+		return ramSize;
 	}
 
 	/**
 	 * @brief Returns system free physical RAM size. (MT-Safe)
 	 * @details See the @ref getFreeRamSize().
-	 * @return The free RAM size in bytes on success, otherwise -1.
+	 * @throw runtime_error if failed to get free RAM size.
 	 */
-	static int64_t getFreeRamSize() noexcept
+	static int64_t getFreeRamSize()
 	{
-		return ::getFreeRamSize();
+		auto ramSize = ::getFreeRamSize();
+		if (ramSize <= 0)
+			throw runtime_error("Failed to get free RAM size.");
+		return ramSize;
 	}
 
 	/**
