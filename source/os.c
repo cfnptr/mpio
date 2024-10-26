@@ -123,6 +123,7 @@ int getPhysicalCpuCount()
 {
 	int cpuCount = -1;
 #if __linux__
+	int processorCount = -1;
 	FILE* file = fopen("/proc/cpuinfo", "r");
 	if (file)
 	{
@@ -133,7 +134,7 @@ int getPhysicalCpuCount()
 			return -1;
 		}
 		
-		int processorCount = -1;
+		
 		while (fgets(buffer, 256, file))
 		{
 			if (memcmp(buffer, "cpu cores", 9) == 0)
