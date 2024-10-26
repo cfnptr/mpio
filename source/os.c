@@ -13,6 +13,9 @@
 // limitations under the License.
 
 #include "mpio/os.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #if __linux__ || __APPLE__
 #include <time.h>
@@ -28,7 +31,6 @@
 #endif
 
 #if __linux__
-#include <stdio.h>
 #include <sys/sysinfo.h>
 #elif __APPLE__
 #include <sys/sysctl.h>
