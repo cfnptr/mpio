@@ -225,7 +225,8 @@ int getPerformanceCpuCount()
 {
 	int cpuCount = -1;
 #if __linux__
-	// TODO: use /sys/devices/system/cpu/cpu0/cpu_capacity
+	// TODO: use libcpuid approach with cpuid and affinity.
+	// https://github.com/anrieff/libcpuid/blob/master/libcpuid/cpuid_main.c#L96
 #elif _WIN32
 	DWORD infoSize = 0;
 	GetLogicalProcessorInformationEx(RelationProcessorCore, NULL, &infoSize);

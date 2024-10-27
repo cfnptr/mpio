@@ -40,12 +40,6 @@ int getLogicalCpuCount();
 int getPhysicalCpuCount();
 
 /**
- * @brief Returns system physical CPU count. (MT-Safe)
- * @details Usefull for a foreground thread pool thread count.
- */
-int getPhysicalCpuCount();
-
-/**
  * @brief Returns system performance CPU count. (MT-Safe)
  * @details Usefull for a foreground thread pool thread count.
  */

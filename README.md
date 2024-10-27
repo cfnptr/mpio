@@ -8,7 +8,9 @@ See the [documentation](https://cfnptr.github.io/mpio).
 
 * Common directory and file functions
 * App data and resources path getters
-* CPU name, RAM size, CPU count getters
+* CPU name (brand, model) getters
+* Free and total RAM size getters
+* Logical, physical, performance CPU count getters
 * Current clock (time stamp) getter
 * C and C++ implementations
 
