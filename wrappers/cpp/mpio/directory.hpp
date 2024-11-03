@@ -19,13 +19,13 @@
  **********************************************************************************************************************/
 
 #pragma once
+#include "mpio/error.hpp"
+#include <filesystem>
 
 extern "C"
 {
 #include "mpio/directory.h"
 }
-
-#include <filesystem>
 
 namespace mpio
 {
@@ -45,13 +45,13 @@ public:
 	 * 
 	 * @param isShared is data directory shared between multiple users
 	 * @return Data directory path on success.
-	 * @throw runtime_error if failed to get data directory.
+	 * @throw Error if failed to get data directory.
 	 */
 	static filesystem::path getDataPath(bool isShared = false)
 	{
 		auto dataPath = getDataDirectory(isShared);
 		if (!dataPath)
-			throw runtime_error("Failed to get data directory.");
+			throw Error("Failed to get data directory.");
 		auto path = filesystem::path(dataPath);
 		free(dataPath);
 		return path;
@@ -64,13 +64,13 @@ public:
 	 * @param appName target application name string
 	 * @param isShared is data directory shared between multiple users
 	 * @return Data directory path on success.
-	 * @throw runtime_error if failed to get app data directory.
+	 * @throw Error if failed to get app data directory.
 	 */
 	static filesystem::path getAppDataPath(const string& appName, bool isShared = false)
 	{
 		auto dataPath = getAppDataDirectory(appName.c_str(), isShared);
 		if (!dataPath)
-			throw runtime_error("Failed to get app data directory.");
+			throw Error("Failed to get app data directory.");
 		auto path = filesystem::path(dataPath);
 		free(dataPath);
 		return path;
@@ -81,13 +81,13 @@ public:
 	 * @details See the @ref getResourcesDirectory().
 	 * 
 	 * @return Resources directory path on success.
-	 * @throw runtime_error if failed to get resources directory.
+	 * @throw Error if failed to get resources directory.
 	 */
 	static filesystem::path getResourcesPath()
 	{
 		auto dataPath = getResourcesDirectory();
 		if (!dataPath)
-			throw runtime_error("Failed to get resources directory.");
+			throw Error("Failed to get resources directory.");
 		auto path = filesystem::path(dataPath);
 		free(dataPath);
 		return path;
