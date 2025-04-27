@@ -1,8 +1,8 @@
 var annotated_dup =
 [
     [ "mpio", null, [
-      [ "Directory", "classmpio_1_1_directory.html", null ],
-      [ "Error", "classmpio_1_1_error.html", "classmpio_1_1_error" ],
-      [ "OS", "classmpio_1_1_o_s.html", null ]
+      [ "Directory", "classmpio_1_1Directory.html", null ],
+      [ "Error", "classmpio_1_1Error.html", "classmpio_1_1Error" ],
+      [ "OS", "classmpio_1_1OS.html", null ]
     ] ]
 ];
