@@ -22,7 +22,7 @@ if(TARGET mpio-static)
 	return()
 endif()
 
-project(mpio VERSION 1.4.0 LANGUAGES C
+project(mpio VERSION 1.5.0 LANGUAGES C
 	DESCRIPTION "Multi-platform common IO library"
 	HOMEPAGE_URL "https://github.com/cfnptr/mpio")
 
