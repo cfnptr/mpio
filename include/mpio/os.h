@@ -29,13 +29,13 @@ double getCurrentClock();
 
 /**
  * @brief Returns system logical CPU count. (MT-Safe)
- * @details Usefull for a background thread pool thread count.
+ * @details Useful for a background thread pool thread count.
  */
 int getLogicalCpuCount();
 
 /**
  * @brief Returns system physical CPU count. (MT-Safe)
- * @details Usefull for a foreground thread pool thread count.
+ * @details Useful for a foreground thread pool thread count.
  */
 int getPhysicalCpuCount();
 
