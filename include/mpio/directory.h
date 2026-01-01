@@ -1,4 +1,4 @@
-// Copyright 2021-2025 Nikita Fediuchin. All rights reserved.
+// Copyright 2021-2026 Nikita Fediuchin. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
 /***********************************************************************************************************************
  * @file
  * @brief Common directory functions.
- **********************************************************************************************************************/
+ */
 
 #pragma once
 #include <stdbool.h>
 
-/***********************************************************************************************************************
+/**
  * @brief Creates a new directory, if it do not already exist. (MT-Safe)
  * @param[in] path target directory path string
  * @return True if a new directory was created, otherwise false.
@@ -33,7 +33,7 @@ bool createDirectory(const char* path);
  */
 bool isDirectoryExists(const char* path);
 
-/***********************************************************************************************************************
+/**
  * @brief Returns application data directory. (MT-Safe)
  * @details The resulting path can be used to store data between application runs, saves, downloaded updates.
  * @note You should free() allocated string manually.

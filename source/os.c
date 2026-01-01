@@ -1,4 +1,4 @@
-// Copyright 2021-2025 Nikita Fediuchin. All rights reserved.
+// Copyright 2021-2026 Nikita Fediuchin. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -62,6 +62,7 @@ double getCurrentClock()
 #endif
 }
 
+//**********************************************************************************************************************
 int getLogicalCpuCount()
 {
 	int cpuCount = -1;
@@ -119,6 +120,7 @@ int getLogicalCpuCount()
 	return cpuCount;
 }
 
+//**********************************************************************************************************************
 int getPhysicalCpuCount()
 {
 	int cpuCount = -1;
@@ -221,6 +223,7 @@ int getPhysicalCpuCount()
 	return cpuCount;
 }
 
+//**********************************************************************************************************************
 int getPerformanceCpuCount()
 {
 	int cpuCount = -1;
@@ -271,6 +274,7 @@ int getPerformanceCpuCount()
 	return cpuCount;
 }
 
+//**********************************************************************************************************************
 int64_t getTotalRamSize()
 {
 #if __linux__
@@ -320,6 +324,7 @@ int64_t getFreeRamSize()
 #endif
 }
 
+//**********************************************************************************************************************
 char* getCpuName()
 {
 	char* cpuName = calloc(65, sizeof(char));
