@@ -28,6 +28,7 @@ You may use default Git install options or chose any other default Git editor in
 1. Download latest release version of installer from [cmake.org](https://cmake.org/download)
 2. Select "Add CMake to the system PATH for the current user" during installation
 
+
 # Ubuntu (22.04/24.04)
 
 ## 1. Install Visual Studio Code (Or any other IDE)
