@@ -68,25 +68,25 @@ int getLogicalCpuCount()
 	int cpuCount = -1;
 #if __linux__
 	cpuCount = (int)sysconf(_SC_NPROCESSORS_ONLN);
-
 	if (cpuCount <= 0)
 	{
 		FILE* file = fopen("/proc/cpuinfo", "r");
 		if (file)
 		{
-			char* buffer = malloc(256);
-			if (!buffer)
+			const size_t bufferSize = 256;
+			char* line = malloc(bufferSize);
+			if (!line)
 			{
 				fclose(file);
 				return -1;
 			}
 
-			while (fgets(buffer, 256, file))
+			while (fgets(line, bufferSize, file))
 			{
-				if (memcmp(buffer, "processor", 9) != 0)
+				size_t lineLength = strlen(line);
+				if (lineLength == 0 || memcmp(line, "processor", 9) != 0)
 					continue;
-
-				char* pointer = memchr(buffer, ':', 256);
+				char* pointer = memchr(line + 9, ':', lineLength - 9);
 				if (!pointer)
 					continue;
 
@@ -94,8 +94,7 @@ int getLogicalCpuCount()
 				if (count > cpuCount)
 					cpuCount = count;
 			}
-
-			fclose(file);
+			free(line); fclose(file);
 		}
 	}
 #elif __APPLE__
@@ -113,8 +112,7 @@ int getLogicalCpuCount()
 		sysctlbyname("hw.activecpu", &cpuCount, &size, NULL, 0);
 	}
 #elif _WIN32
-	SYSTEM_INFO systemInfo;
-	GetSystemInfo(&systemInfo);
+	SYSTEM_INFO systemInfo; GetSystemInfo(&systemInfo);
 	cpuCount = (int)systemInfo.dwNumberOfProcessors;
 #endif
 	return cpuCount;
@@ -129,51 +127,49 @@ int getPhysicalCpuCount()
 	FILE* file = fopen("/proc/cpuinfo", "r");
 	if (file)
 	{
-		char* buffer = malloc(256);
-		if (!buffer)
+		const size_t bufferSize = 256;
+		char* line = malloc(bufferSize);
+		if (!line)
 		{
 			fclose(file);
 			return -1;
 		}
-		
-		
-		while (fgets(buffer, 256, file))
+
+		while (fgets(line, bufferSize, file))
 		{
-			if (memcmp(buffer, "cpu cores", 9) == 0)
+			size_t lineLength = strlen(line);
+			if (lineLength == 0)
+				continue;
+
+			if (memcmp(line, "cpu cores", 9) == 0)
 			{
-				char* pointer = memchr(buffer, ':', 256);
+				char* pointer = memchr(line + 9, ':', lineLength - 9);
 				if (!pointer)
 					continue;
-
 				cpuCount = atoi(pointer + 1);
-				free(buffer);
-				fclose(file);
+				free(line); fclose(file);
 				return cpuCount;
 			}
-			if (memcmp(buffer, "processor", 9) == 0)
+			if (memcmp(line, "processor", 9) == 0)
 			{
-				char* pointer = memchr(buffer, ':', 256);
+				char* pointer = memchr(line + 9, ':', lineLength - 9);
 				if (!pointer)
 					continue;
-
 				int count = atoi(pointer + 1) + 1;
 				if (count > processorCount)
 					processorCount = count;
 			}
-
-			if (memcmp(buffer, "core id", 7) != 0)
-				continue;
-
-			char* pointer = memchr(buffer, ':', 256);
-			if (!pointer)
-				continue;
-
-			int count = atoi(pointer + 1) + 1;
-			if (count > cpuCount)
-				cpuCount = count;
+			if (memcmp(line, "core id", 7) != 0)
+			{
+				char* pointer = memchr(line + 7, ':', lineLength - 7);
+				if (!pointer)
+					continue;
+				int count = atoi(pointer + 1) + 1;
+				if (count > cpuCount)
+					cpuCount = count;
+			}
 		}
-
-		fclose(file);
+		free(line); fclose(file);
 	}
 
 	if (cpuCount <= 0)
@@ -188,8 +184,7 @@ int getPhysicalCpuCount()
 		sysctlbyname("machdep.cpu.core_count", &cpuCount, &size, NULL, 0);
 	}
 #elif _WIN32
-	DWORD infoSize = 0;
-	GetLogicalProcessorInformationEx(RelationProcessorCore, NULL, &infoSize);
+	DWORD infoSize = 0; GetLogicalProcessorInformationEx(RelationProcessorCore, NULL, &infoSize);
 	if (GetLastError() != ERROR_INSUFFICIENT_BUFFER)
 		return -1;
 
@@ -197,24 +192,19 @@ int getPhysicalCpuCount()
 	if (!infoBuffer)
 		return -1;
 
-	PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX info = 
-		(PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX)infoBuffer;
-	if (GetLogicalProcessorInformationEx(
-		RelationProcessorCore, info, &infoSize) != TRUE)
+	PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX info = (PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX)infoBuffer;
+	if (GetLogicalProcessorInformationEx(RelationProcessorCore, info, &infoSize) != TRUE)
 	{
 		free(infoBuffer);
 		return -1;
 	}
 
-	cpuCount = 0;
-	size_t offset = 0;
-
+	cpuCount = 0; size_t offset = 0;
 	do
 	{
 		const PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX currentInfo =
 			(const PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX)(infoBuffer + offset);
-		offset += currentInfo->Size;
-		cpuCount++;
+		offset += currentInfo->Size; cpuCount++;
 	}
 	while (offset < infoSize);
 
@@ -231,8 +221,7 @@ int getPerformanceCpuCount()
 	// TODO: use libcpuid approach with cpuid and affinity.
 	// https://github.com/anrieff/libcpuid/blob/master/libcpuid/cpuid_main.c#L96
 #elif _WIN32
-	DWORD infoSize = 0;
-	GetLogicalProcessorInformationEx(RelationProcessorCore, NULL, &infoSize);
+	DWORD infoSize = 0; GetLogicalProcessorInformationEx(RelationProcessorCore, NULL, &infoSize);
 	if (GetLastError() != ERROR_INSUFFICIENT_BUFFER)
 		return -1;
 
@@ -240,18 +229,14 @@ int getPerformanceCpuCount()
 	if (!infoBuffer)
 		return -1;
 
-	PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX info =
-		(PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX)infoBuffer;
-	if (GetLogicalProcessorInformationEx(
-		RelationProcessorCore, info, &infoSize) != TRUE)
+	PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX info = (PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX)infoBuffer;
+	if (GetLogicalProcessorInformationEx(RelationProcessorCore, info, &infoSize) != TRUE)
 	{
 		free(infoBuffer);
 		return -1;
 	}
 
-	cpuCount = 0;
-	size_t offset = 0;
-
+	cpuCount = 0; size_t offset = 0;
 	do
 	{
 		const PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX currentInfo =
@@ -284,8 +269,7 @@ int64_t getTotalRamSize()
 	return (int64_t)info.totalram * (int64_t)info.mem_unit;
 #elif __APPLE__
 	int mib [] = { CTL_HW, HW_MEMSIZE };
-	int64_t value = 0;
-	size_t length = sizeof(int64_t);
+	int64_t value = 0; size_t length = sizeof(int64_t);
 	if (sysctl(mib, 2, &value, &length, NULL, 0) != 0)
 		return -1;
 	return value;
@@ -301,20 +285,79 @@ int64_t getTotalRamSize()
 int64_t getFreeRamSize()
 {
 #if __linux__
+	FILE* file = fopen("/proc/meminfo", "r");
+	if (file)
+	{
+		const size_t bufferSize = 256;
+		char* line = malloc(bufferSize);
+		if (!line)
+		{
+			fclose(file);
+			return -1;
+		}
+	
+		int64_t memFree = 0, buffers = 0, cached = 0, sReclaimable = 0;
+		while (fgets(line, bufferSize, file))
+		{
+			size_t lineLength = strlen(line);
+			if (lineLength == 0)
+				continue;
+
+			if (memcmp(line, "MemAvailable", 12) == 0)
+			{
+				char* pointer = memchr(line + 12, ':', lineLength - 12);
+				if (!pointer)
+					continue;
+				memFree = atoll(pointer + 1);
+				free(line); fclose(file);
+				return memFree * 1024;
+			}
+
+			if (memcmp(line, "MemFree", 7) == 0)
+			{
+				char* pointer = memchr(line + 7, ':', lineLength - 7);
+				if (!pointer)
+					continue;
+				memFree = atoll(pointer + 1);
+			}
+			else if (memcmp(line, "Buffers", 7) == 0)
+			{
+				char* pointer = memchr(line + 7, ':', lineLength - 7);
+				if (!pointer)
+					continue;
+				buffers = atoll(pointer + 1);
+			}
+			else if (memcmp(line, "Cached", 6) == 0)
+			{
+				char* pointer = memchr(line + 6, ':', lineLength - 6);
+				if (!pointer)
+					continue;
+				cached = atoll(pointer + 1);
+			}
+			else if (memcmp(line, "SReclaimable", 12) == 0)
+			{
+				char* pointer = memchr(line + 12, ':', lineLength - 12);
+				if (!pointer)
+					continue;
+				sReclaimable = atoll(pointer + 1);
+			}
+		}
+		free(line); fclose(file);
+
+		return (memFree + buffers + cached + sReclaimable) * 1024;
+	}
+
 	struct sysinfo info;
 	if (sysinfo(&info) != 0)
 		return -1;
 	return (int64_t)info.freeram * (int64_t)info.mem_unit;
 #elif __APPLE__
 	mach_msg_type_number_t count = HOST_VM_INFO64_COUNT;
-	vm_statistics64_data_t vmstat;
-	if (host_statistics64(mach_host_self(), HOST_VM_INFO64,
-		(host_info64_t)&vmstat, &count) != KERN_SUCCESS)
-	{
+	vm_statistics64_data_t vmStat;
+	if (host_statistics64(mach_host_self(), HOST_VM_INFO64, (host_info64_t)&vmStat, &count) != KERN_SUCCESS)
 		return -1;
-	}
-	return (vmstat.inactive_count + vmstat.free_count) * 
-		(int64_t)getpagesize() / (1024 * 1024 * 1024);
+	int64_t pageSize = (int64_t)getpagesize() / (1024 * 1024 * 1024);
+	return (vmStat.inactive_count + vmStat.free_count + vmStat.speculative_count) * pageSize;
 #elif _WIN32
 	MEMORYSTATUSEX statex;
 	statex.dwLength = sizeof(statex);
@@ -347,7 +390,6 @@ char* getCpuName()
 			memcpy(cpuName + 32, cpuInfo, sizeof(cpuInfo));
 	}
 #else
-
 	memcpy(cpuName, "Unknown\0", 8);
 
 	#if __APPLE__
@@ -357,51 +399,46 @@ char* getCpuName()
 	FILE* file = fopen("/proc/cpuinfo", "r");
 	if (file)
 	{
-		char* buffer = malloc(256);
-		if (!buffer)
+		const size_t bufferSize = 256;
+		char* line = malloc(bufferSize);
+		if (!line)
 		{
 			fclose(file);
 			return cpuName;
 		}
 
-		while (fgets(buffer, 256, file))
+		while (fgets(line, bufferSize, file))
 		{
-			if (memcmp(buffer, "model name", 10) != 0 &&
-				memcmp(buffer, "Model", 5) != 0)
-			{
+			size_t lineLength = strlen(line);
+			if (lineLength == 0 || memcmp(line, "model name", 10) != 0 && memcmp(line, "Model", 5) != 0)
 				continue;
-			}
-
-			char* pointer = memchr(buffer, ':', 256);
+			char* pointer = memchr(line + 5, ':', lineLength - 5);
 			if (!pointer)
 				continue;
 
-			size_t index = (pointer - buffer) + 2;
-			if (index >= 256)
+			size_t index = (pointer - line) + 2;
+			if (index >= lineLength)
 				continue;
 
-			for (size_t i = index; i < 256; i++)
+			for (size_t i = index; i < lineLength; i++)
 			{
-				char value = buffer[i];
+				char value = line[i];
 				if (value != '\n' && value != '\0')
 					continue;
 
-				size_t count = i - index;
 				if (i > 64)
 				{
-					free(buffer);
-					fclose(file);
+					free(line); fclose(file);
 					return cpuName;
 				}
 
-				memcpy(cpuName, buffer + index, count);
+				size_t count = i - index;
+				memcpy(cpuName, line + index, count);
 				cpuName[count] = '\0';
 				break;
 			}
 		}
-
-		free(buffer);
-		fclose(file);
+		free(line); fclose(file);
 	}
 	#endif
 #endif
@@ -423,6 +460,5 @@ char* getCpuName()
 		free(cpuName);
 		return NULL;
 	}
-
 	return newCpuName;
 }
