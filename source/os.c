@@ -16,16 +16,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #if __linux__ || __APPLE__
 #include <time.h>
 #include <unistd.h>
+#include <sys/wait.h>
 	#if __x86_64__ || __i386__
 	#include <cpuid.h>
 	#endif
 #elif _WIN32
 #include <intrin.h>
 #include <windows.h>
+#include <process.h>
 #else
 #error Unknown operating system
 #endif
@@ -35,6 +38,7 @@
 #elif __APPLE__
 #include <sys/sysctl.h>
 #include <mach/mach_host.h>
+#include <CoreFoundation/CoreFoundation.h>
 #endif
 
 #if __x86_64__ || _M_X64 || __i386__
@@ -352,12 +356,10 @@ int64_t getFreeRamSize()
 		return -1;
 	return (int64_t)info.freeram * (int64_t)info.mem_unit;
 #elif __APPLE__
-	mach_msg_type_number_t count = HOST_VM_INFO64_COUNT;
-	vm_statistics64_data_t vmStat;
+	mach_msg_type_number_t count = HOST_VM_INFO64_COUNT; vm_statistics64_data_t vmStat;
 	if (host_statistics64(mach_host_self(), HOST_VM_INFO64, (host_info64_t)&vmStat, &count) != KERN_SUCCESS)
 		return -1;
-	int64_t pageSize = (int64_t)getpagesize() / (1024 * 1024 * 1024);
-	return (vmStat.inactive_count + vmStat.free_count + vmStat.speculative_count) * pageSize;
+	return (vmStat.inactive_count + vmStat.free_count + vmStat.speculative_count) * (int64_t)getpagesize();
 #elif _WIN32
 	MEMORYSTATUSEX statex;
 	statex.dwLength = sizeof(statex);
@@ -461,4 +463,89 @@ char* getCpuName()
 		return NULL;
 	}
 	return newCpuName;
+}
+
+//**********************************************************************************************************************
+int executeFileVA(const char* filePath, va_list args)
+{
+	assert(filePath);
+
+	size_t capacity = 2;
+	char** argv = malloc(capacity * sizeof(char*));
+	if (!argv)
+		return -1;
+
+	argv[0] = (char*)filePath;
+	char* arg; size_t count = 1; 
+	do
+	{
+		arg = va_arg(args, char*);
+		if (count >= capacity)
+		{
+			capacity *= 2;
+			char** newArgv = realloc(argv, capacity * sizeof(char*));
+			if (!newArgv)
+			{
+				free(argv);
+				return -1;
+			}
+			argv = newArgv;
+		}
+		argv[count++] = arg;
+	}
+	while (arg != NULL);
+
+#if __linux__ || __APPLE__
+	pid_t pid = fork();
+	if (pid < 0)
+		return -1;
+
+	if (pid == 0)
+	{
+		execvp(filePath, argv);
+		_exit(1);
+	}
+
+	int status = 0; waitpid(pid, &status, 0);
+	if (!WIFEXITED(status))
+		return -1;
+	return WEXITSTATUS(status);
+#elif _WIN32
+	return _spawnvp(_P_WAIT, filePath, argv);
+#endif
+}
+int executeFile(const char* filePath, ...)
+{
+	assert(filePath);
+	va_list args;
+	va_start(args, filePath);
+	int exitCode = executeFileVA(filePath, args);
+	va_end(args);
+	return exitCode;
+}
+
+//**********************************************************************************************************************
+bool openFileManager(const char* path)
+{
+#if __linux__
+	return executeFile("xdg-open", path, NULL) == 0;
+#elif __APPLE__
+	return executeFile("open", path, NULL) == 0;
+#elif _WIN32
+	return executeFile("cmd", "/c", "start", path, NULL) == 0;
+#endif
+}
+void showError(const char* title, const char* message)
+{
+#if __linux__
+	executeFile("notify-send", "-a", "Garden Engine", "-u", "critical", title, message, NULL);
+#elif __APPLE__
+	CFStringRef header = CFStringCreateWithCString(NULL, title, kCFStringEncodingUTF8);
+	CFStringRef message = CFStringCreateWithCString(NULL, message, kCFStringEncodingUTF8);
+	CFUserNotificationDisplayAlert(0, kCFUserNotificationCautionAlertLevel, 
+		NULL, NULL, NULL, header, message, NULL, NULL, NULL, NULL);
+	CFRelease(header); CFRelease(message);
+#elif _WIN32
+	MessageBoxA(nullptr, body, title, MB_ICONERROR | MB_SYSTEMMODAL);
+#endif
 }

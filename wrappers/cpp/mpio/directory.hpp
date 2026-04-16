@@ -33,12 +33,14 @@ namespace mpio
 using namespace std;
 
 /**
- * @brief Common directory functions.
+ * @brief Common directory functions. (MT-Safe)
  * @details See the @ref directory.h
  */
 class Directory
 {
 public:
+	// Note: Use std:: functions instead of createDirectory(), isDirectoryExists()!
+
 	/**
 	 * @brief Returns application data directory. (MT-Safe)
 	 * @details See the @ref getDataDirectory().
@@ -92,8 +94,6 @@ public:
 		free(dataPath);
 		return path;
 	}
-
-	// Use std:: functions instead of createDirectory(), isDirectoryExists()
 };
 
 } // mpio

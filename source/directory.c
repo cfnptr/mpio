@@ -97,7 +97,6 @@ bool isDirectoryExists(const char* path)
 {
 	assert(path != NULL);
 	DWORD attribs = GetFileAttributes(path);
-
 	return (attribs != INVALID_FILE_ATTRIBUTES &&
 		(attribs & FILE_ATTRIBUTE_DIRECTORY));
 }
@@ -105,16 +104,14 @@ bool isDirectoryExists(const char* path)
 char* getDataDirectory(bool isShared)
 {
 	PWSTR wideDataPath;
-	HRESULT result = SHGetKnownFolderPath(
-		isShared ? &FOLDERID_ProgramData : &FOLDERID_RoamingAppData,
-		0, NULL, &wideDataPath);
+	HRESULT result = SHGetKnownFolderPath(isShared ? &FOLDERID_ProgramData : 
+		&FOLDERID_RoamingAppData, 0, NULL, &wideDataPath);
 	if (FAILED(result))
 	{
 		CoTaskMemFree(wideDataPath);
 		return NULL;
 	}
 
-	size_t length = 0;
 	size_t wideLength = wcslen(wideDataPath);
 	size_t byteSize = wideLength * 4 + 1;
 	char* dataPath = malloc(byteSize);
@@ -124,6 +121,7 @@ char* getDataDirectory(bool isShared)
 		return NULL;
 	}
 
+	size_t length = 0;
 	errno_t error = wcstombs_s(&length, dataPath, byteSize, wideDataPath, wideLength * 4);
 	CoTaskMemFree(wideDataPath);
 	if (error != 0)

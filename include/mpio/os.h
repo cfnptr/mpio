@@ -19,6 +19,8 @@
 
 #pragma once
 #include <stdint.h>
+#include <stdarg.h>
+#include <stdbool.h>
 
 /**
  * @brief Returns high resolution time stamp in seconds. (MT-Safe)
@@ -66,3 +68,35 @@ int64_t getFreeRamSize();
  * @return An allocated CPU name string.
  */
 char* getCpuName();
+
+/**
+ * @brief Executes specified file with arguments. (MT-Safe)
+ * @return Program exit code or -1 if process stopped or crashed.
+ *
+ * @param[in] filePath file path string
+ * @param args program arguments
+ */
+int executeFileVA(const char* filePath, va_list args);
+/**
+ * @brief Executes specified file with arguments. (MT-Safe)
+ * @return Program exit code or -1 if process stopped or crashed.
+ * @warning Always pass NULL as the last argument in the list!!!
+ *
+ * @param[in] filePath file path string
+ * @param ... program arguments
+ */
+int executeFile(const char* filePath, ...);
+
+/**
+ * @brief Opens file using preferred application. (Explorer, Finder, Browser, etc.)
+ * @param[in] path directory or file path string
+ * @return True on success, otherwise false.
+ */
+bool openFileManager(const char* path);
+/**
+ * @brief Shows system error message. (Window or popup)
+ *
+ * @param[in] title message title string
+ * @param[in] message error message string
+ */
+void showError(const char* title, const char* message);

@@ -20,6 +20,7 @@
 
 #pragma once
 #include "mpio/error.hpp"
+#include <filesystem>
 
 extern "C"
 {
@@ -32,7 +33,7 @@ namespace mpio
 using namespace std;
 
 /**
- * @brief Common operating system functions.
+ * @brief Common operating system functions. (MT-Safe)
  * @details See the @ref os.h
  */
 class OS
@@ -125,6 +126,65 @@ public:
 		auto cpuString = string(cpuName);
 		free(cpuName);
 		return cpuString;
+	}
+
+	/**
+	 * @brief Executes specified file with arguments. (MT-Safe)
+	 * @details See the @ref executeFileVA().
+	 *
+	 * @param[in] filePath file path string
+	 * @param args program arguments
+	 *
+	 * @return Program exit code or -1 if process stopped or crashed.
+	 */
+	static int executeFileVA(const string& filePath, va_list args) noexcept
+	{
+		va_list stdArgs;
+		va_copy(stdArgs, args);
+		auto exitCode = ::executeFileVA(filePath.c_str(), stdArgs);
+		va_end(stdArgs);
+		return exitCode;
+	}
+	/**
+	 * @brief Logs message to the log. (MT-Safe)
+	 * @details See the @ref executeFileVA().
+	 * @warning Always pass NULL as the last argument in the list!!!
+	 *
+	 * @param[in] filePath file path string
+	 * @param args program arguments
+	 *
+	 * @return Program exit code or -1 if process stopped or crashed.
+	 */
+	static int executeFile(const char* filePath, ...) noexcept
+	{
+		va_list args;
+		va_start(args, filePath);
+		auto exitCode = ::executeFileVA(filePath, args);
+		va_end(args);
+		return exitCode;
+	}
+
+	/**
+	 * @brief Opens file using preferred application. (Explorer, Finder, Browser, etc.)
+	 * @details See the @ref executeFileVA().
+	 *
+	 * @param[in] path directory or file path string
+	 * @return True on success, otherwise false.
+	 */
+	static bool openFileManager(const string& path)
+	{
+		return ::openFileManager(path.c_str());
+	}
+	/**
+	 * @brief Shows system error message. (Window or popup)
+	 * @details See the @ref showError().
+	 *
+	 * @param[in] title message title string
+	 * @param[in] message error message string
+	 */
+	static void showError(const string& title, const string& message)
+	{
+		::showError(title.c_str(), message.c_str());
 	}
 };
 
