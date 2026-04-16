@@ -546,6 +546,6 @@ void showError(const char* title, const char* message)
 		NULL, NULL, NULL, header, msg, NULL, NULL, NULL, NULL);
 	CFRelease(header); CFRelease(msg);
 #elif _WIN32
-	MessageBoxA(nullptr, body, title, MB_ICONERROR | MB_SYSTEMMODAL);
+	MessageBoxA(NULL, body, title, MB_ICONERROR | MB_SYSTEMMODAL);
 #endif
 }
