@@ -12,6 +12,8 @@ See the [documentation](https://cfnptr.github.io/mpio).
 * Free and total RAM size getters
 * Logical, physical, performance CPU count getters
 * Current clock (time stamp) getter
+* Universal file execution
+* System error window show
 * C and C++ implementations
 * Supports Windows, macOS and Linux
 
