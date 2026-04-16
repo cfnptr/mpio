@@ -541,10 +541,10 @@ void showError(const char* title, const char* message)
 	executeFile("notify-send", "-a", "Garden Engine", "-u", "critical", title, message, NULL);
 #elif __APPLE__
 	CFStringRef header = CFStringCreateWithCString(NULL, title, kCFStringEncodingUTF8);
-	CFStringRef message = CFStringCreateWithCString(NULL, message, kCFStringEncodingUTF8);
+	CFStringRef msg = CFStringCreateWithCString(NULL, message, kCFStringEncodingUTF8);
 	CFUserNotificationDisplayAlert(0, kCFUserNotificationCautionAlertLevel, 
-		NULL, NULL, NULL, header, message, NULL, NULL, NULL, NULL);
-	CFRelease(header); CFRelease(message);
+		NULL, NULL, NULL, header, msg, NULL, NULL, NULL, NULL);
+	CFRelease(header); CFRelease(msg);
 #elif _WIN32
 	MessageBoxA(nullptr, body, title, MB_ICONERROR | MB_SYSTEMMODAL);
 #endif
