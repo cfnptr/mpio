@@ -466,12 +466,36 @@ char* getCpuName()
 }
 
 //**********************************************************************************************************************
+int executeFileA(const char* filePath, char** args)
+{
+	assert(filePath);
+	assert(args);
+
+#if __linux__ || __APPLE__
+	pid_t pid = fork();
+	if (pid < 0)
+		return -1;
+
+	if (pid == 0)
+	{
+		execvp(filePath, args);
+		_exit(1);
+	}
+
+	int status = 0; waitpid(pid, &status, 0);
+	if (!WIFEXITED(status))
+		return -1;
+	return WEXITSTATUS(status);
+#elif _WIN32
+	return _spawnvp(_P_WAIT, filePath, args);
+#endif
+}
 int executeFileVA(const char* filePath, va_list args)
 {
 	assert(filePath);
 
 	size_t capacity = 2;
-	char** argv = malloc(capacity * sizeof(char*));
+	char** argv = malloc(capacity * sizeof(const char*));
 	if (!argv)
 		return -1;
 
@@ -495,24 +519,7 @@ int executeFileVA(const char* filePath, va_list args)
 	}
 	while (arg != NULL);
 
-#if __linux__ || __APPLE__
-	pid_t pid = fork();
-	if (pid < 0)
-		return -1;
-
-	if (pid == 0)
-	{
-		execvp(filePath, argv);
-		_exit(1);
-	}
-
-	int status = 0; waitpid(pid, &status, 0);
-	if (!WIFEXITED(status))
-		return -1;
-	return WEXITSTATUS(status);
-#elif _WIN32
-	return _spawnvp(_P_WAIT, filePath, argv);
-#endif
+	return executeFileA(filePath, argv);
 }
 int executeFile(const char* filePath, ...)
 {

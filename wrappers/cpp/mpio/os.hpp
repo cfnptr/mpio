@@ -130,6 +130,19 @@ public:
 
 	/**
 	 * @brief Executes specified file with arguments. (MT-Safe)
+	 * @details See the @ref executeFileA().
+	 *
+	 * @param[in] filePath file path string
+	 * @param args program arguments
+	 *
+	 * @return Program exit code or -1 if process stopped or crashed.
+	 */
+	static int executeFile(const char* filePath, char** args) noexcept
+	{
+		return executeFileA(filePath, args);
+	}
+	/**
+	 * @brief Executes specified file with arguments. (MT-Safe)
 	 * @details See the @ref executeFileVA().
 	 *
 	 * @param[in] filePath file path string
@@ -137,11 +150,11 @@ public:
 	 *
 	 * @return Program exit code or -1 if process stopped or crashed.
 	 */
-	static int executeFileVA(const string& filePath, va_list args) noexcept
+	static int executeFile(const char* filePath, va_list args) noexcept
 	{
 		va_list stdArgs;
 		va_copy(stdArgs, args);
-		auto exitCode = ::executeFileVA(filePath.c_str(), stdArgs);
+		auto exitCode = executeFileVA(filePath, stdArgs);
 		va_end(stdArgs);
 		return exitCode;
 	}
@@ -159,7 +172,7 @@ public:
 	{
 		va_list args;
 		va_start(args, filePath);
-		auto exitCode = ::executeFileVA(filePath, args);
+		auto exitCode = executeFileVA(filePath, args);
 		va_end(args);
 		return exitCode;
 	}

@@ -74,6 +74,14 @@ char* getCpuName();
  * @return Program exit code or -1 if process stopped or crashed.
  *
  * @param[in] filePath file path string
+ * @param[in] args program arguments (last should be NULL!)
+ */
+int executeFileA(const char* filePath, char** args);
+/**
+ * @brief Executes specified file with arguments. (MT-Safe)
+ * @return Program exit code or -1 if process stopped or crashed.
+ *
+ * @param[in] filePath file path string
  * @param args program arguments
  */
 int executeFileVA(const char* filePath, va_list args);
