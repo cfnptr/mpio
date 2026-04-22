@@ -32,15 +32,17 @@ set(CMAKE_C_STANDARD_REQUIRED TRUE)
 option(MPIO_BUILD_SHARED "Build MPIO shared library" ON)
 option(MPIO_BUILD_TESTS "Build MPIO library tests" ON)
 
-if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-	enable_language(OBJC)
-endif()
-
 configure_file(cmake/defines.h.in include/mpio/defines.h)
 
 set(MPIO_SOURCES source/directory.c source/os.c)
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-	list(APPEND MPIO_SOURCES source/directory.m)
+	enable_language(OBJC)
+
+	set(MPIO_APPLE_SOURCES source/directory.m)
+	list(APPEND MPIO_SOURCES ${MPIO_APPLE_SOURCES})
+
+	# Note: We need this to fix Xcode compilation errors.
+	set_source_files_properties(${MPIO_APPLE_SOURCES} PROPERTIES LANGUAGE OBJC)
 endif()
 
 set(MPIO_INCLUDE_DIRS ${PROJECT_BINARY_DIR}/include
