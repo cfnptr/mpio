@@ -159,7 +159,7 @@ public:
 		return exitCode;
 	}
 	/**
-	 * @brief Logs message to the log. (MT-Safe)
+	 * @brief Executes specified file with arguments. (MT-Safe)
 	 * @details See the @ref executeFileVA().
 	 * @warning Always pass NULL as the last argument in the list!!!
 	 *
